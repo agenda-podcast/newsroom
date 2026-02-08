@@ -43,7 +43,6 @@ concurrency:
 jobs:
   render:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.podcast_id != '' && inputs.podcast_id || 'default' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

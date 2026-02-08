@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       podcast_id:
-        description: "Podcast id (environment name for secrets; row key in podcasts.csv). Empty uses default."
+        description: "Podcast id (row key in data/video-data/podcasts.csv). Empty uses default."
         required: false
         default: ""
       max_items:
@@ -27,7 +27,6 @@ concurrency:
 jobs:
   upload:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.podcast_id != '' && inputs.podcast_id || 'default' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
