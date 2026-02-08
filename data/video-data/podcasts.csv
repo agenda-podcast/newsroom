@@ -1,2 +1,2 @@
 podcast_id,video_rss_path,search_prefix,clip_orientation_policy,min_aspect_ratio,thumb_square_path,thumb_bg_color,thumb_title_color,yt_category_id,yt_privacy,yt_playlist_id,yt_credentials_ref
-default,feed/video_podcast.xml,,horizontal,1.0,data/thumbnail_left.png,#000000,#FFFFFF,25,private,,ENV:default
+default,feed/video_podcast.xml,,horizontal,1.0,data/thumbnail_left.png,#000000,#FFFFFF,25,public,,ENV:default
