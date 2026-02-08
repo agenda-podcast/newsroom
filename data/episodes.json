@@ -223,7 +223,7 @@
     "enclosure:https://www.buzzsprout.com/2562524/episodes/18631183-new-york-city-musical-extravaganzas-2026.mp3": {
       "source_key": "enclosure:https://www.buzzsprout.com/2562524/episodes/18631183-new-york-city-musical-extravaganzas-2026.mp3",
       "guid": "agenda-18631183",
-      "podcast_id": "default",
+      "podcast_id": "PublicSafety",
       "podcast_name": "Agenda",
       "title": "New York City Musical Extravaganzas 2026",
       "pubDate_rfc822": "Thu, 05 Feb 2026 18:00:00 +0000",
@@ -234,7 +234,7 @@
     "enclosure:https://www.buzzsprout.com/2562524/episodes/18631206-theater-life-in-new-york-city-2026.mp3": {
       "source_key": "enclosure:https://www.buzzsprout.com/2562524/episodes/18631206-theater-life-in-new-york-city-2026.mp3",
       "guid": "agenda-18631206",
-      "podcast_id": "default",
+      "podcast_id": "PublicSafety",
       "podcast_name": "Agenda",
       "title": "Theater Life in New York City 2026",
       "pubDate_rfc822": "Thu, 05 Feb 2026 18:00:00 +0000",
@@ -245,7 +245,7 @@
     "enclosure:https://www.buzzsprout.com/2562524/episodes/18633888-gaga-bon-jovi-punjabi-in-madison-square-garden-2026.mp3": {
       "source_key": "enclosure:https://www.buzzsprout.com/2562524/episodes/18633888-gaga-bon-jovi-punjabi-in-madison-square-garden-2026.mp3",
       "guid": "agenda-18633888",
-      "podcast_id": "default",
+      "podcast_id": "PublicSafety",
       "podcast_name": "Agenda",
       "title": "Gaga, Bon Jovi, Punjabi in Madison Square Garden 2026",
       "pubDate_rfc822": "Fri, 06 Feb 2026 04:00:00 +0000",
@@ -256,7 +256,7 @@
     "enclosure:https://www.buzzsprout.com/2562524/episodes/18633897-new-york-s-2026-artquake.mp3": {
       "source_key": "enclosure:https://www.buzzsprout.com/2562524/episodes/18633897-new-york-s-2026-artquake.mp3",
       "guid": "agenda-18633897",
-      "podcast_id": "default",
+      "podcast_id": "PublicSafety",
       "podcast_name": "Agenda",
       "title": "New York’s 2026 ArtQuake",
       "pubDate_rfc822": "Fri, 06 Feb 2026 04:00:00 +0000",
@@ -267,7 +267,7 @@
     "enclosure:https://www.buzzsprout.com/2562524/episodes/18633902-nyc-concerts-2026-barclays-center-vs-stadiums.mp3": {
       "source_key": "enclosure:https://www.buzzsprout.com/2562524/episodes/18633902-nyc-concerts-2026-barclays-center-vs-stadiums.mp3",
       "guid": "agenda-18633902",
-      "podcast_id": "default",
+      "podcast_id": "PublicSafety",
       "podcast_name": "Agenda",
       "title": "NYC Concerts 2026: Barclays Center vs. Stadiums",
       "pubDate_rfc822": "Fri, 06 Feb 2026 04:00:00 +0000",
@@ -278,7 +278,7 @@
     "enclosure:https://www.buzzsprout.com/2562524/episodes/18633907-2026-ny-fashion-week-or-comic-con.mp3": {
       "source_key": "enclosure:https://www.buzzsprout.com/2562524/episodes/18633907-2026-ny-fashion-week-or-comic-con.mp3",
       "guid": "agenda-18633907",
-      "podcast_id": "default",
+      "podcast_id": "PublicSafety",
       "podcast_name": "Agenda",
       "title": "2026 NY Fashion Week or Comic Con",
       "pubDate_rfc822": "Fri, 06 Feb 2026 04:00:00 +0000",
@@ -289,6 +289,8 @@
     "enclosure:https://www.buzzsprout.com/2562524/episodes/18644654-street-prostitution-in-new-york-city.mp3": {
       "source_key": "enclosure:https://www.buzzsprout.com/2562524/episodes/18644654-street-prostitution-in-new-york-city.mp3",
       "guid": "agenda-18644654",
+      "podcast_id": "PublicSafety",
+      "podcast_name": "Agenda",
       "title": "Street prostitution in New York City",
       "pubDate_rfc822": "Sun, 08 Feb 2026 19:00:00 +0000",
       "audio_url": "https://github.com/agenda-podcast/newsroom/releases/download/audio-archive/20260208-Street_prostitution_in_New_York_City.mp3",
