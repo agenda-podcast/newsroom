@@ -88,6 +88,10 @@ def render_episode(
     # Step 1) Compute durations precisely.
     audio_dur = ffprobe_duration_sec(audio_path)
 
+    # Podcast config is passed from the caller via env to keep the API surface
+    # stable. This value is used as the location_prefix for query generation.
+    search_prefix = str(os.environ.get("VP_SEARCH_PREFIX", "")).strip()
+
     one_pass = bool(render_one_pass)
     one_pass_env = os.environ.get("RENDER_ONE_PASS", "").strip().lower()
     if one_pass_env in ("1", "true", "yes", "on"):
@@ -108,7 +112,7 @@ def render_episode(
         "queries_filtered": [],
         "queries_dropped": [],
         "proxy_queries_added": [],
-        "location_prefix": "",
+        "location_prefix": search_prefix,
     }
 
     used_release_clips = False
