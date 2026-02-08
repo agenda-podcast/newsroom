@@ -366,7 +366,16 @@ def main():
     # Parse SOURCE feed
     src = feedparser.parse(RSS)
     reg = load_podcast_reg(PODCAST_REG_FILE)
-    podcast_name = str((src.feed.get("title") if isinstance(src.feed, dict) else "") or PODCAST_TITLE).strip()
+    podcast_name = str(src.feed.get("title") or PODCAST_TITLE).strip()
+    # Backfill podcast fields for existing episodes in-place (single-source feed context)
+    for _k, _v in list(episodes_map.items()):
+        if not isinstance(_v, dict):
+            continue
+        if not str(_v.get("podcast_name") or "").strip():
+            _v["podcast_name"] = podcast_name
+        if not str(_v.get("podcast_id") or "").strip():
+            _v["podcast_id"] = derive_podcast_id({}, src.feed, podcast_name, reg, env_title=PODCAST_TITLE, default_pid="default")
+        episodes_map[_k] = _v
     if not src.entries:
         # Even if SOURCE RSS has no entries, preserve existing episodes
         episodes = list(episodes_map.values())
@@ -443,6 +452,8 @@ def main():
         episodes_map[skey] = {
             "source_key": skey,
             "guid": guid,
+            "podcast_id": derive_podcast_id(entry, src.feed, podcast_name, reg, env_title=PODCAST_TITLE, default_pid="default"),
+            "podcast_name": podcast_name,
             "title": title,
             "pubDate_rfc822": pub_rfc822,
             "audio_url": target_url,
