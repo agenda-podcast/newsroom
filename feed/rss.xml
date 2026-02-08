@@ -9,7 +9,7 @@
     <language>en-us</language>
     <copyright>© 2026 Agenda</copyright>
     <description><![CDATA[Podcast archive feed.]]></description>
-    <lastBuildDate>Sun, 08 Feb 2026 21:47:54 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 08 Feb 2026 22:23:27 +0000</lastBuildDate>
     <itunes:author>Agenda</itunes:author>
 <itunes:owner>
 
@@ -22,6 +22,15 @@
     <itunes:explicit>false</itunes:explicit>
     
     <itunes:category text="News"/>
+    <item>
+      <title>Street prostitution in New York City</title>
+      <itunes:title>Street prostitution in New York City</itunes:title>
+      <guid isPermaLink="false">agenda-18644654</guid>
+      <pubDate>Sun, 08 Feb 2026 19:00:00 +0000</pubDate>
+      <description><![CDATA[We examining the systemic public safety failures and organized crime networks surrounding open-air prostitution on Roosevelt Avenue in Queens. We highlight how these illicit markets serve as revenue engines for gangs, leading to increased violence, narcotics trafficking, and a degraded quality of life for local families. They argue that city management has failed to protect residents, specifically pointing to the psychological toll on children who witness solicitation near schools. To combat ...]]></description>
+      <enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/audio-archive/20260208-Street_prostitution_in_New_York_City.mp3" length="24252963" type="audio/mpeg"/>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
     <item>
       <title>Gaga, Bon Jovi, Punjabi in Madison Square Garden 2026</title>
       <itunes:title>Gaga, Bon Jovi, Punjabi in Madison Square Garden 2026</itunes:title>
