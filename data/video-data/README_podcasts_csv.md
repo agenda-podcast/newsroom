@@ -13,7 +13,7 @@ The file combines:
 - Empty string means: not provided / use system default.
 - Colors use hex RGB: #RRGGBB.
 - Dates for RSS should be RFC 2822 when written into RSS (example: `Sun, 08 Feb 2026 21:00:00 -0500`).
-- URLs should be absolute (https://...). File paths are relative to your repo root unless your pipeline states otherwise.
+- URLs should be absolute (https://example.com). File paths are relative to your repo root unless your pipeline states otherwise.
 
 ## Column reference
 
@@ -163,7 +163,7 @@ The file combines:
 - Type: string (url or path)
 - Required: no
 - Example: `data/artwork/agenda_podcast_3000.jpg`
-- Description: Show artwork (RSS <image> and/or <itunes:image href="...">). Prefer >= 1400x1400, typically 3000x3000 JPEG/PNG.
+- Description: Show artwork (RSS <image> and/or <itunes:image href="https://example.com">). Prefer >= 1400x1400, typically 3000x3000 JPEG/PNG.
 - Used by: RSS output; directories; YouTube static episode video art.
 
 ### category_1
@@ -259,7 +259,7 @@ The file combines:
 - Type: string (url)
 - Required: no
 - Example: `https://buymeacoffee.com/agendapodcast`
-- Description: Funding/support link #1 (Podcasting 2.0 <podcast:funding url="...">).
+- Description: Funding/support link #1 (Podcasting 2.0 <podcast:funding url="https://example.com">).
 - Used by: RSS output (Podcasting 2.0) and apps that show support buttons.
 
 ### funding_text_1

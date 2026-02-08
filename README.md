@@ -53,7 +53,7 @@ Configure these in GitHub: Settings → Secrets and variables → Actions
 pip install -r requirements.txt
 
 # Run sync (requires environment variables)
-export RSS="https://feeds.buzzsprout.com/..."
+export RSS="https://feeds.buzzsprout.com/[snip]"
 export REPO="owner/repo"
 export GITHUB_TOKEN="your_token"
 python scripts/sync.py

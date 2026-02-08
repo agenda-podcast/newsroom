@@ -197,9 +197,12 @@ def write_queue_mode(repo_root: Path, *, run_all_podcasts: bool, podcast_id: str
     p.write_text(json.dumps(d, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
-def _videos_row_for_episode(ep: Episode, podcast_id: str) -> Dict[str, str]:
+def _videos_row_for_episode(ep: Episode, default_podcast_id: str) -> Dict[str, str]:
+    pid = (getattr(ep, "podcast_id", "") or "").strip()
+    if not pid:
+        pid = (default_podcast_id or "").strip()
     return {
-        "podcast_id": podcast_id,
+        "podcast_id": pid,
         "episode_guid": ep.guid,
         "episode_title": ep.title,
         "published_at_rfc822": ep.pub_rfc822,
@@ -269,15 +272,63 @@ def ensure_videos_csv(
 
     p = videos_csv_path(repo_root)
     if p.exists():
+        # Normalize schema and opportunistically backfill podcast_id from episodes.json if available.
         fields, rows = _read_csv(p)
-        if fields == VIDEOS_FIELDS:
-            return p
+
+        episodes_path = (repo_root / episodes_json_rel).resolve()
+        ep_pid_by_guid: Dict[str, str] = {}
+        if episodes_path.exists():
+            try:
+                eps = parse_episodes(episodes_path)
+                for ep in eps:
+                    g = (ep.guid or "").strip()
+                    pid = (getattr(ep, "podcast_id", "") or "").strip()
+                    if g and pid:
+                        ep_pid_by_guid[g] = pid
+            except Exception:
+                # Keep deterministic behavior even if episodes parsing fails.
+                ep_pid_by_guid = {}
+
+        def _pick_pid(existing_pid: str, guid: str) -> str:
+            cur = (existing_pid or "").strip()
+            ep_pid = (ep_pid_by_guid.get((guid or "").strip()) or "").strip()
+
+            # If cur is empty, prefer episodes.json, else default.
+            if not cur:
+                return ep_pid or default_pid
+
+            # If episodes.json now has a non-empty pid and current is default, upgrade to episode pid.
+            if ep_pid and cur == default_pid and ep_pid != cur:
+                return ep_pid
+
+            return cur
+
+        changed = False
         rows2: List[Dict[str, str]] = []
+
+        if fields == VIDEOS_FIELDS:
+            for r in rows:
+                nr = {k: (r.get(k) or "").strip() for k in VIDEOS_FIELDS}
+                guid = (nr.get("episode_guid") or "").strip()
+                new_pid = _pick_pid(nr.get("podcast_id") or "", guid)
+                if new_pid != (nr.get("podcast_id") or "").strip():
+                    nr["podcast_id"] = new_pid
+                    changed = True
+                rows2.append(nr)
+
+            if changed:
+                _write_csv(p, VIDEOS_FIELDS, _sort_videos(rows2))
+            return p
+
+        # If schema differs, normalize and also pick podcast ids.
         for r in rows:
             nr = {k: (r.get(k) or "").strip() for k in VIDEOS_FIELDS}
+            guid = (nr.get("episode_guid") or "").strip()
+            nr["podcast_id"] = _pick_pid(nr.get("podcast_id") or "", guid)
             if not nr["podcast_id"]:
                 nr["podcast_id"] = default_pid
             rows2.append(nr)
+
         _write_csv(p, VIDEOS_FIELDS, _sort_videos(rows2))
         return p
 

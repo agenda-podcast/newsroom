@@ -12,6 +12,8 @@ import requests
 import feedparser
 from dateutil import parser as dtparser
 
+from scripts.sync_podcast_id import load_podcast_reg, derive_podcast_id
+
 # -----------------------------
 # Environment (required)
 # -----------------------------
@@ -33,6 +35,7 @@ ITUNES_SUBCATEGORY = (os.environ.get("ITUNES_SUBCATEGORY", "") or "").strip()
 DATA_FILE = "data/episodes.json"
 RSS_OUT = "feed/rss.xml"
 TMP_DIR = "audio_tmp"
+PODCAST_REG_FILE = "data/video-data/podcast_reg.csv"
 
 os.makedirs("data", exist_ok=True)
 os.makedirs("feed", exist_ok=True)
@@ -330,6 +333,7 @@ def save_state(state: dict) -> None:
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(state, f, ensure_ascii=False, indent=2)
 
+
 # -----------------------------
 # Main
 # -----------------------------
@@ -353,6 +357,8 @@ def main():
 
     # Parse SOURCE feed
     src = feedparser.parse(RSS)
+    reg = load_podcast_reg(PODCAST_REG_FILE)
+    podcast_name = str((src.feed.get("title") if isinstance(src.feed, dict) else "") or PODCAST_TITLE).strip()
     if not src.entries:
         # Even if SOURCE RSS has no entries, preserve existing episodes
         episodes = list(episodes_map.values())
@@ -398,6 +404,8 @@ def main():
             episodes_map[skey] = {
                 "source_key": skey,
                 "guid": guid,
+                "podcast_id": derive_podcast_id(entry, src.feed, podcast_name, reg, env_title=PODCAST_TITLE, default_pid="default"),
+                "podcast_name": podcast_name,
                 "title": title,
                 "pubDate_rfc822": pub_rfc822,
                 "audio_url": existing["audio_url"],
