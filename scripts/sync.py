@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import json
 import hashlib
@@ -11,6 +12,13 @@ from xml.sax.saxutils import escape
 import requests
 import feedparser
 from dateutil import parser as dtparser
+
+# When this file is executed as "python scripts/sync.py", Python sets sys.path[0]
+# to the scripts/ directory. That breaks absolute imports like "from scripts.X"
+# because the repo root is not on sys.path. Add repo root explicitly.
+_REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
 
 from scripts.sync_podcast_id import load_podcast_reg, derive_podcast_id
 
