@@ -1,0 +1,150 @@
+name: Render Video Podcast
+
+on:
+  workflow_dispatch:
+    inputs:
+      podcast_id:
+        description: "Podcast id (row key in data/video-data/podcasts.csv). Empty uses default."
+        required: false
+        default: ""
+      render_one_pass:
+        description: "If true, render final video in ONE ffmpeg pass (no per-clip encoding)"
+        required: true
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+      max_items:
+        description: "Max NEW episodes to render (0 = no limit)"
+        required: true
+        default: "1"
+      dry_run:
+        description: "If true, do not render, only print plan and write status/rss"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "true"
+          - "false"
+      force_guid:
+        description: "If set, process only this guid (even if already processed)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: podcast-archive-global
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.podcast_id != '' && inputs.podcast_id || 'default' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Install image dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install pillow==10.4.0
+
+      - name: Render new videos
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          EXTRA=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            EXTRA="--dry-run"
+          fi
+          if [ "${{ inputs.render_one_pass }}" = "true" ]; then
+            EXTRA="${EXTRA} --render-one-pass"
+          fi
+          python -m scripts.video_podcast.render_video_podcast             --repo-root .             --podcast-id "${{ inputs.podcast_id }}"             --max-items "${{ inputs.max_items }}"             --force-guid "${{ inputs.force_guid }}"             ${EXTRA}
+
+      - name: Commit rss and state
+        run: |
+          set -euo pipefail
+          git status --porcelain
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add data/video-data feed
+            git commit -m "video: update rss and render state"
+            git push
+          else
+            echo "No repo changes to commit."
+          fi
+
+      - name: Publish to GitHub Releases
+        if: ${{ inputs.dry_run != 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VIDEO_TAG="video-podcast"
+          VIDEO_NAME="video podcast"
+          MAN_TAG="video-podcast-manifests"
+          MAN_NAME="video podcast manifests"
+          CLIPS_TAG="video-podcast-clips"
+          CLIPS_NAME="video podcast clips"
+
+          if ! gh release view "${VIDEO_TAG}" >/dev/null 2>&1; then
+            gh release create "${VIDEO_TAG}" --title "${VIDEO_NAME}" --notes "Auto-generated video episodes." --latest=false
+          fi
+          if ! gh release view "${MAN_TAG}" >/dev/null 2>&1; then
+            gh release create "${MAN_TAG}" --title "${MAN_NAME}" --notes "Auto-generated episode manifests." --latest=false
+          fi
+          if ! gh release view "${CLIPS_TAG}" >/dev/null 2>&1; then
+            gh release create "${CLIPS_TAG}" --title "${CLIPS_NAME}" --notes "Auto-generated ordered clips per episode (assets named <guid>_main_0001.mp4, etc.)." --latest=false
+          fi
+
+          if ls -1 work/video-podcast/videos/*.mp4 >/dev/null 2>&1; then
+            gh release upload "${VIDEO_TAG}" work/video-podcast/videos/*.mp4 --clobber
+          else
+            echo "No videos found to upload."
+          fi
+
+          if ls -1 work/video-podcast/manifests/*.json >/dev/null 2>&1; then
+            gh release upload "${MAN_TAG}" work/video-podcast/manifests/*.json --clobber
+          else
+            echo "No manifests found to upload."
+          fi
+
+          if ls -1 work/video-podcast/clips_release/*.mp4 >/dev/null 2>&1; then
+            gh release upload "${CLIPS_TAG}" work/video-podcast/clips_release/*.mp4 --clobber
+          else
+            echo "No clips found to upload."
+          fi
+
+          rm -rf work/video-podcast/clips_release || true
+          rm -rf work/video-podcast/videos || true
+          rm -rf work/video-podcast/manifests || true
+
+      - name: Trigger Check episodes queue
+        if: ${{ success() && inputs.dry_run != 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run check_episodes_queue.yml

@@ -1,0 +1,86 @@
+name: Check episodes queue
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_all_podcasts:
+        description: "true: render/upload across all podcast_id rows in data/video-data/podcasts.csv"
+        required: true
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+      podcast_id:
+        description: "If run_all_podcasts=false, process only this podcast_id (must exist in podcasts.csv)"
+        required: false
+        default: ""
+  workflow_run:
+    workflows:
+      - Sync Podcast
+      - Render Video Podcast
+      - Upload Video Podcast from Release
+    types:
+      - completed
+
+concurrency:
+  group: check-episodes-queue
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Persist queue mode (manual only)
+        if: ${{ github.event_name == 'workflow_dispatch' && github.actor != 'github-actions[bot]' }}
+        run: |
+          python -m scripts.video_podcast.queue_mode_cli --repo-root . --run-all-podcasts "${{ inputs.run_all_podcasts }}" --podcast-id "${{ inputs.podcast_id }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/video-data/queue_mode.json
+          if git diff --cached --quiet; then
+            echo "[queue_mode] no changes"
+            exit 0
+          fi
+          git commit -m "Update queue mode"
+          git push
+
+      - name: Decide next action
+        id: decide
+        run: |
+          python -m scripts.video_podcast.check_queue
+
+      - name: Dispatch render workflow
+        if: ${{ steps.decide.outputs.action == 'render' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "[dispatch] render podcast_id=${{ steps.decide.outputs.podcast_id }} guid=${{ steps.decide.outputs.guid }}"
+          gh workflow run render_video_podcast.yml             -f podcast_id="${{ steps.decide.outputs.podcast_id }}"             -f force_guid="${{ steps.decide.outputs.guid }}"             -f max_items="1"             -f render_one_pass="true"
+
+      - name: Dispatch upload workflow
+        if: ${{ steps.decide.outputs.action == 'upload' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "[dispatch] upload podcast_id=${{ steps.decide.outputs.podcast_id }} guid=${{ steps.decide.outputs.guid }}"
+          gh workflow run upload_video_podcast_from_release.yml             -f podcast_id="${{ steps.decide.outputs.podcast_id }}"             -f force_guid="${{ steps.decide.outputs.guid }}"             -f max_items="1"
+
+      - name: Nothing to do
+        if: ${{ steps.decide.outputs.action == 'none' }}
+        run: |
+          echo "[dispatch] none reason=${{ steps.decide.outputs.reason }}"

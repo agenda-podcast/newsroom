@@ -1,0 +1,95 @@
+name: Upload Video Podcast from Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      podcast_id:
+        description: "Podcast id (environment name for secrets; row key in podcasts.csv). Empty uses default."
+        required: false
+        default: ""
+      max_items:
+        description: "Upload at most N items (0 = no limit)"
+        required: true
+        default: "1"
+      force_guid:
+        description: "If set, upload only this guid and ignore skip logic"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: podcast-archive-global
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.podcast_id != '' && inputs.podcast_id || 'default' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python deps
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install google-api-python-client google-auth google-auth-oauthlib pillow==10.4.0
+
+      - name: Download videos and manifests from releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/video-podcast/videos work/video-podcast/manifests
+          gh release download "video-podcast" --pattern "*.mp4" --dir work/video-podcast/videos || true
+          gh release download "video-podcast-manifests" --pattern "*.json" --dir work/video-podcast/manifests || true
+          ls -la work/video-podcast/videos || true
+          ls -la work/video-podcast/manifests || true
+
+      - name: Upload to YouTube
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          CLEANUP_RELEASE_TAG: "video-podcast"
+        run: |
+          set -euo pipefail
+          python -m scripts.video_podcast.youtube_upload             --repo-root .             --podcast-id "${{ inputs.podcast_id }}"             --max-items "${{ inputs.max_items }}"             --force-guid "${{ inputs.force_guid }}"             --cleanup-release-tag "video-podcast"
+
+      - name: Commit rss and state
+        run: |
+          set -euo pipefail
+          git status --porcelain
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add data/video-data feed
+            git commit -m "video: update upload state"
+            git push
+          else
+            echo "No repo changes to commit."
+          fi
+
+      - name: Cleanup workspace
+        run: |
+          rm -rf work/video-podcast/videos || true
+          rm -rf work/video-podcast/manifests || true
+
+      - name: Trigger Check episodes queue
+        if: ${{ success() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run check_episodes_queue.yml

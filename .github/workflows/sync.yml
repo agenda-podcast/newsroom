@@ -1,0 +1,144 @@
+name: Sync Podcast
+
+on:
+  workflow_dispatch: {}
+  #schedule:
+    #- cron: "0 * * * *"
+
+permissions:
+  contents: write
+  actions: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: podcast-archive-global
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Fail fast if RSS missing
+        run: |
+          if [ -z "${{ secrets.RSS }}" ]; then
+            echo "ERROR: RSS secret is missing. Add it in Settings -> Secrets -> Actions."
+            exit 1
+          fi
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: python -m pip install --upgrade pip requests feedparser python-dateutil
+
+      - name: Run sync
+        env:
+          RSS: ${{ secrets.RSS }}
+          PODCAST_TITLE: ${{ secrets.PODCAST_TITLE }}
+          PODCAST_LINK: ${{ secrets.PODCAST_LINK }}
+          PODCAST_DESCRIPTION: ${{ secrets.PODCAST_DESCRIPTION }}
+          PODCAST_IMAGE: ${{ secrets.PODCAST_IMAGE }}
+          ITUNES_CATEGORY: ${{ secrets.ITUNES_CATEGORY }}
+          ITUNES_SUBCATEGORY: ${{ secrets.ITUNES_SUBCATEGORY }}
+          RELEASE_TAG: audio-archive
+          REPO: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "=== scripts folder ==="
+          ls -la scripts || true
+          python --version
+          python scripts/sync.py
+
+      - name: Debug - show outputs and status
+        run: |
+          echo "=== PWD ==="
+          pwd
+          echo "=== ls -la ==="
+          ls -la
+          echo "=== ls -R ==="
+          ls -R || true
+          echo "=== git status ==="
+          git status --porcelain || true
+          echo "=== feed/rss.xml ==="
+          test -f feed/rss.xml && (wc -c feed/rss.xml; head -n 40 feed/rss.xml) || echo "MISSING feed/rss.xml"
+          echo "=== data/episodes.json ==="
+          test -f data/episodes.json && (wc -c data/episodes.json; head -n 120 data/episodes.json) || echo "MISSING data/episodes.json"
+
+      - name: Ensure itunes:owner in RSS (hardcoded)
+        run: |
+          RSS_FILE="feed/rss.xml"
+          if [ ! -f "$RSS_FILE" ]; then
+          echo "RSS file not found"
+          exit 1
+          fi
+          if grep -q "<itunes:owner>" "$RSS_FILE"; then
+          echo "itunes:owner already present"
+          exit 0
+          fi
+          echo "Injecting itunes:owner into RSS"
+          sed -i '/<itunes:author>/a\
+          <itunes:owner>\n\
+          <itunes:name>Agenda</itunes:name>\n\
+          <itunes:email>deep.dive.podcast@unloca.com</itunes:email>\n\
+          </itunes:owner>' "$RSS_FILE"
+      
+      - name: Commit feed + metadata
+        run: |
+          git config user.name "podcast-bot"
+          git config user.email "bot@github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add feed/rss.xml data/episodes.json
+            git commit -m "chore: sync archive feed" || true
+            # Option 1: rebase onto latest main then push (retry).
+            git fetch origin main
+            git rebase --autostash origin/main
+            for i in 1 2 3; do
+              if git push; then
+                break
+              fi
+              echo "[git] push rejected; rebasing onto origin/main and retrying (\${i}/3)"
+              git fetch origin main
+              git rebase --autostash origin/main
+              sleep 2
+            done
+          else
+            echo "No changes"
+          fi
+
+
+      - name: Configure Pages
+        if: ${{ success() }}
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        if: ${{ success() }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: feed
+
+      - name: Deploy to GitHub Pages
+        if: ${{ success() }}
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Trigger Check episodes queue
+        if: ${{ success() }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run check_episodes_queue.yml
