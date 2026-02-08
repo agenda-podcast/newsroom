@@ -5,7 +5,8 @@ import os
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-from .util import ffprobe_duration_sec, run, run_ffmpeg_with_progress
+from .util import ffprobe_duration_sec, run
+from .ffmpeg_progress import run_ffmpeg_with_progress
 
 TARGET_W = 1920
 TARGET_H = 1080
