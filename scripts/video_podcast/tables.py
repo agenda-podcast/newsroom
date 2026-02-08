@@ -271,68 +271,98 @@ def ensure_videos_csv(
     default_pid = pick_default_podcast_id(podcasts)
 
     p = videos_csv_path(repo_root)
-    if p.exists():
-        # Normalize schema and opportunistically backfill podcast_id from episodes.json if available.
-        fields, rows = _read_csv(p)
+if p.exists():
+    # Merge episodes.json into videos.csv, normalize schema, and backfill podcast_id.
+    # This is required so that new episodes discovered by Sync become render candidates
+    # even when videos.csv already exists.
 
-        episodes_path = (repo_root / episodes_json_rel).resolve()
-        ep_pid_by_guid: Dict[str, str] = {}
-        if episodes_path.exists():
-            try:
-                eps = parse_episodes(episodes_path)
-                for ep in eps:
-                    g = (ep.guid or "").strip()
-                    pid = (getattr(ep, "podcast_id", "") or "").strip()
-                    if g and pid:
-                        ep_pid_by_guid[g] = pid
-            except Exception:
-                # Keep deterministic behavior even if episodes parsing fails.
-                ep_pid_by_guid = {}
+    fields, rows = _read_csv(p)
 
-        def _pick_pid(existing_pid: str, guid: str) -> str:
-            cur = (existing_pid or "").strip()
-            ep_pid = (ep_pid_by_guid.get((guid or "").strip()) or "").strip()
-
-            # If cur is empty, prefer episodes.json, else default.
-            if not cur:
-                return ep_pid or default_pid
-
-            # If episodes.json now has a non-empty pid and current is default, upgrade to episode pid.
-            if ep_pid and cur == default_pid and ep_pid != cur:
-                return ep_pid
-
-            return cur
-
-        changed = False
-        rows2: List[Dict[str, str]] = []
-
-        if fields == VIDEOS_FIELDS:
-            for r in rows:
-                nr = {k: (r.get(k) or "").strip() for k in VIDEOS_FIELDS}
-                guid = (nr.get("episode_guid") or "").strip()
-                new_pid = _pick_pid(nr.get("podcast_id") or "", guid)
-                if new_pid != (nr.get("podcast_id") or "").strip():
-                    nr["podcast_id"] = new_pid
-                    changed = True
-                rows2.append(nr)
-
-            if changed:
-                _write_csv(p, VIDEOS_FIELDS, _sort_videos(rows2))
-            return p
-
-        # If schema differs, normalize and also pick podcast ids.
-        for r in rows:
-            nr = {k: (r.get(k) or "").strip() for k in VIDEOS_FIELDS}
-            guid = (nr.get("episode_guid") or "").strip()
-            nr["podcast_id"] = _pick_pid(nr.get("podcast_id") or "", guid)
-            if not nr["podcast_id"]:
-                nr["podcast_id"] = default_pid
-            rows2.append(nr)
-
-        _write_csv(p, VIDEOS_FIELDS, _sort_videos(rows2))
-        return p
-
+    # Load episodes and build a guid -> Episode map.
     episodes_path = (repo_root / episodes_json_rel).resolve()
+    eps: List[Episode] = []
+    eps_by_guid: Dict[str, Episode] = {}
+    if episodes_path.exists():
+        try:
+            eps = parse_episodes(episodes_path)
+            for ep in eps:
+                g = (ep.guid or "").strip()
+                if g:
+                    eps_by_guid[g] = ep
+        except Exception:
+            eps = []
+            eps_by_guid = {}
+
+    # guid -> pid from episodes.json (only when non-empty).
+    ep_pid_by_guid: Dict[str, str] = {}
+    for g, ep in eps_by_guid.items():
+        pid = (getattr(ep, "podcast_id", "") or "").strip()
+        if pid:
+            ep_pid_by_guid[g] = pid
+
+    def _pick_pid(existing_pid: str, guid: str) -> str:
+        cur = (existing_pid or "").strip()
+        g = (guid or "").strip()
+        ep_pid = (ep_pid_by_guid.get(g) or "").strip()
+
+        # If cur is empty, prefer episodes.json, else default.
+        if not cur:
+            return ep_pid or default_pid
+
+        # If episodes.json now has a non-empty pid and current is default, upgrade to episode pid.
+        if ep_pid and cur == default_pid and ep_pid != cur:
+            return ep_pid
+
+        return cur
+
+    # Normalize existing rows and merge episode metadata.
+    rows_by_guid: Dict[str, Dict[str, str]] = {}
+    for r in rows:
+        nr = {k: (r.get(k) or "").strip() for k in VIDEOS_FIELDS}
+        guid = (nr.get("episode_guid") or "").strip()
+        if not guid:
+            continue
+        nr["podcast_id"] = _pick_pid(nr.get("podcast_id") or "", guid)
+        if not nr["podcast_id"]:
+            nr["podcast_id"] = default_pid
+
+        ep = eps_by_guid.get(guid)
+        if ep is not None:
+            # Episodes.json is the canonical source for these fields.
+            if (ep.title or "").strip():
+                nr["episode_title"] = ep.title
+            if (ep.pub_rfc822 or "").strip():
+                nr["published_at_rfc822"] = ep.pub_rfc822
+            if (ep.audio_url or "").strip():
+                nr["audio_url"] = ep.audio_url
+            # If episodes.json has a podcast_id, keep it aligned.
+            ep_pid = (getattr(ep, "podcast_id", "") or "").strip()
+            if ep_pid:
+                nr["podcast_id"] = _pick_pid(nr.get("podcast_id") or "", guid)
+
+        rows_by_guid[guid] = nr
+
+    # Add missing episodes as new rows.
+    for guid, ep in eps_by_guid.items():
+        if guid in rows_by_guid:
+            continue
+        rows_by_guid[guid] = _videos_row_for_episode(ep, default_pid)
+
+    # Overlay state.json so rebuilds remain consistent even if videos.csv was deleted.
+    state_path = (repo_root / state_rel).resolve()
+    if state_path.exists():
+        st = load_state(state_path)
+        _apply_state_to_videos_rows(rows_by_guid, st)
+
+    merged_rows = list(rows_by_guid.values())
+    for r in merged_rows:
+        if not (r.get("podcast_id") or "").strip():
+            r["podcast_id"] = default_pid
+
+    _write_csv(p, VIDEOS_FIELDS, _sort_videos(merged_rows))
+    return p
+
+episodes_path = (repo_root / episodes_json_rel).resolve()
     eps: List[Episode] = []
     if episodes_path.exists():
         eps = parse_episodes(episodes_path)
