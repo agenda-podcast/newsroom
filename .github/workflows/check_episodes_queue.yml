@@ -15,13 +15,13 @@ on:
         description: "If run_all_podcasts=false, process only this podcast_id (must exist in podcasts.csv)"
         required: false
         default: ""
-  workflow_run:
-    workflows:
-      - Sync Podcast
-      - Render Video Podcast
-      - Upload Video Podcast from Release
-    types:
-      - completed
+  #workflow_run:
+    #workflows:
+      #- Sync Podcast
+      #- Render Video Podcast
+      #- Upload Video Podcast from Release
+    #types:
+      #- completed
 
 concurrency:
   group: check-episodes-queue
