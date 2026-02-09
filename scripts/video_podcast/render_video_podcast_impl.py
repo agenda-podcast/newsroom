@@ -32,7 +32,7 @@ from .util import (
 CLIP_SEC_T2 = 30.0
 CLIP_SEC_T3 = 15.0
 MIN_ASSET_SEC = 16.0
-T1_MIN_SEC = 40.0
+T1_MIN_SEC = 0.0
 T1_MAX_SEC = 600.0
 
 # Expected asset locations in the repository.
