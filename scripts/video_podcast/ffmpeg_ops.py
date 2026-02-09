@@ -40,9 +40,9 @@ def ffmpeg_make_clip(src: Path, dst: Path, start_sec: float, dur_sec: float) -> 
         "-an",
         "-c:v", "libx264",
         "-preset", "veryfast",
-        "-crf", os.getenv("VIDEO_CRF", "24"),
-        "-maxrate", os.getenv("VIDEO_MAXRATE", "6M"),
-        "-bufsize", os.getenv("VIDEO_BUFSIZE", "12M"),
+        "-crf", os.getenv("VIDEO_CRF", "26"),
+        "-maxrate", os.getenv("VIDEO_MAXRATE", "4M"),
+        "-bufsize", os.getenv("VIDEO_BUFSIZE", "8M"),
         "-pix_fmt", "yuv420p",
         str(dst),
     ]
