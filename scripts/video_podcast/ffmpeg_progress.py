@@ -5,6 +5,7 @@ from __future__ import annotations
 import select
 import subprocess
 import threading
+import time
 from collections import deque
 from typing import Any, Deque, Dict, List, Optional, Tuple
 
