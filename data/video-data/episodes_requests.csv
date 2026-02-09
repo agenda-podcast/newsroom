@@ -1,0 +1,3 @@
+task_id,podcast_id,source_urls,custom_prompt,title,description,status,operation_name,requested_at_utc,downloaded_at_utc,audio_release_tag,audio_asset_name,audio_url,last_error
+# Example row (edit/remove)
+# 000001,agenda,"https://example.com/article1;https://example.com/article2","Create an audio overview focusing on the key arguments.","Episode title","Episode description.",PENDING_REQUEST,,,,,,,

@@ -53,7 +53,7 @@ Configure these in GitHub: Settings → Secrets and variables → Actions
 pip install -r requirements.txt
 
 # Run sync (requires environment variables)
-export RSS="https://feeds.buzzsprout.com/[snip]"
+export RSS="https://feeds.buzzsprout.com/..."
 export REPO="owner/repo"
 export GITHUB_TOKEN="your_token"
 python scripts/sync.py
@@ -126,9 +126,6 @@ The workflow can optionally upload rendered MP4s to YouTube.
 - `YOUTUBE_CLIENT_ID`
 - `YOUTUBE_CLIENT_SECRET`
 - `YOUTUBE_REFRESH_TOKEN`
-
-Optional (best-effort playlist add):
-- `YOUTUBE_PLAYLIST_ID` (if set, the upload step will attempt to add each uploaded video to this playlist; failures only log a warning and do not fail the upload)
 
 #### Get a refresh token (one-time, on your laptop)
 1) Create a Google Cloud project and enable the YouTube Data API.

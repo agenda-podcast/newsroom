@@ -1,0 +1,56 @@
+name: Podcast API - Download Audio
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Google auth
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.GCP_SA_KEY_JSON }}"
+          token_format: "access_token"
+
+      - name: Download and upload audio
+        env:
+          GOOGLE_ACCESS_TOKEN: "${{ steps.auth.outputs.access_token }}"
+          # Used by GitHub Releases uploader in scripts/podcast_api/github_release.py
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        run: |
+          python -m scripts.podcast_api.download_audio \
+            --table data/video-data/episodes_requests.csv \
+            --podcasts data/video-data/podcasts.csv \
+            --release-tag audio-archive
+
+      - name: Commit updates
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add data/video-data/episodes_requests.csv
+          git commit -m "Update episodes_requests after audio download"
+          git push
