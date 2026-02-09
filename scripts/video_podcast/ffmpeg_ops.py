@@ -1,5 +1,4 @@
 # ASCII-only. No ellipses. Keep <= 500 lines.
-
 import os
 
 from pathlib import Path
@@ -41,6 +40,9 @@ def ffmpeg_make_clip(src: Path, dst: Path, start_sec: float, dur_sec: float) -> 
         "-an",
         "-c:v", "libx264",
         "-preset", "veryfast",
+        "-crf", os.getenv("VIDEO_CRF", "24"),
+        "-maxrate", os.getenv("VIDEO_MAXRATE", "6M"),
+        "-bufsize", os.getenv("VIDEO_BUFSIZE", "12M"),
         "-pix_fmt", "yuv420p",
         str(dst),
     ]
