@@ -389,8 +389,14 @@
         "video_id": "6RI4USIlxyA",
         "video_url": "https://www.youtube.com/watch?v=6RI4USIlxyA"
       }
+    },
+    "agenda-18644654": {
+      "manifest_asset_name": "agenda-18644654_street-prostitution-in-new-york-city.json",
+      "processed_at": "2026-02-09T01:04:53Z",
+      "video_asset_name": "agenda-18644654_street-prostitution-in-new-york-city.mp4",
+      "video_tag": "video-podcast"
     }
   },
-  "updated_at": "2026-02-06T06:30:58Z",
+  "updated_at": "2026-02-09T01:04:53Z",
   "version": 1
 }

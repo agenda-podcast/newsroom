@@ -3,22 +3,14 @@
 <channel>
 <title>Video Podcast</title>
 <description>Rendered video episodes (B-roll + RSS audio)</description>
-<link>https://github.com/agenda-podcast/podcast-archive</link>
+<link>https://github.com/agenda-podcast/newsroom</link>
 <item>
 <guid>agenda-18591274</guid>
 <title>2026 Winter Storm: infrastructure damage, widespread power outages, and over 100 fatalities</title>
 <description>We discuss the 2025–2026 North American winter, a season defined by a weak La Niña pattern and frequent extreme weather events. Major storms throughout late 2025 and early 2026 caused significant infrastructure damage, widespread power outages, and over 100 fatalities across the United States and Canada. Reports highlight the economic consequences of these disasters, with total costs estimated to exceed billions of dollars due to supply chain disruptions and record-breaking snowfall and ice. [snip]</description>
 <pubDate>Thu, 29 Jan 2026 17:00:00 +0000</pubDate>
 <link>https://www.youtube.com/watch?v=ZSsQ4NVgE5E</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18591274_2026-winter-storm-infrastructure-damage-widespread-power-out.mp4" type="video/mp4" />
-</item>
-<item>
-<guid>agenda-18592126</guid>
-<title>US big Cities: Why Record Safety Feels Like Danger</title>
-<description>As of early 2026, the United States is experiencing a historic decline in violent crime, particularly homicide, though specific challenges regarding youth violence and drug offenses persist. The following overview details the current situation based on data through the end of 2025. Why don&apos;t we feel the changes?</description>
-<pubDate>Thu, 29 Jan 2026 19:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=D9zZN7X_gQo</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18592126_us-big-cities-why-record-safety-feels-like-danger.mp4" type="video/mp4" />
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18591274_2026-winter-storm-infrastructure-damage-widespread-power-out.mp4" type="video/mp4" />
 </item>
 <item>
 <guid>agenda-18592072</guid>
@@ -26,7 +18,15 @@
 <description>In 2025 New York City elections, highlighting the historic victory of Zohran Mamdani, the city&apos;s first democratic socialist Muslim mayor. His progressive platform focuses on freezing rents for stabilized tenants and reforming public safety by creating a new Department of Community Safety. While incumbent Eric Adams defended his record on crime reduction and housing during his final months in office, the transition to the Mamdani administration has sparked debate over the future of the NYPD. W[snip]</description>
 <pubDate>Thu, 29 Jan 2026 19:00:00 +0000</pubDate>
 <link>https://www.youtube.com/watch?v=cpcdk4H8dXA</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18592072_why-nyc-rejected-record-safety-for-socialism.mp4" type="video/mp4" />
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18592072_why-nyc-rejected-record-safety-for-socialism.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18592126</guid>
+<title>US big Cities: Why Record Safety Feels Like Danger</title>
+<description>As of early 2026, the United States is experiencing a historic decline in violent crime, particularly homicide, though specific challenges regarding youth violence and drug offenses persist. The following overview details the current situation based on data through the end of 2025. Why don&apos;t we feel the changes?</description>
+<pubDate>Thu, 29 Jan 2026 19:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=D9zZN7X_gQo</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18592126_us-big-cities-why-record-safety-feels-like-danger.mp4" type="video/mp4" />
 </item>
 <item>
 <guid>agenda-18592980</guid>
@@ -34,7 +34,7 @@
 <description>The push for legalization has resulted in a chaotic landscape where illegal operators thrive at the expense of public safety. Under the Democratic leadership, the city has been forced to shut down over 1,300 illegal smoke shops that were unlawfully selling cannabis, often targeting children. Despite these efforts, drug offenses remain a stubborn outlier in crime statistics; while other categories reportedly declined, drug offenses actually increased by 7% in 2025. This &quot;atmosphere of anything[snip]</description>
 <pubDate>Thu, 29 Jan 2026 22:00:00 +0000</pubDate>
 <link>https://www.youtube.com/watch?v=sMhhslmt5R0</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18592980_failure-of-legalization-and-the-rise-of-disorder.mp4" type="video/mp4" />
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18592980_failure-of-legalization-and-the-rise-of-disorder.mp4" type="video/mp4" />
 </item>
 <item>
 <guid>agenda-18593227</guid>
@@ -42,7 +42,7 @@
 <description>The phenomenon of &quot;arrest avoidance&quot; to protect statistics. In high-stakes precincts, officers may be discouraged from making arrests that could lead to a spike in reported crime or that would require extensive &quot;bag of shit&quot; paperwork and supervision. The &quot;fake reports&quot; and &quot;lack of reports&quot; described by the rank-and-file are not merely administrative errors; they are the output of a system designed to prioritize the appearance of public safety over the reality of justice. The &quot;impotence&quot; of [snip]</description>
 <pubDate>Thu, 29 Jan 2026 23:00:00 +0000</pubDate>
 <link>https://www.youtube.com/watch?v=cZok_vdzSQY</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18593227_cooking-the-books-on-nyc-crime-arrest-avoidance-as-statistic.mp4" type="video/mp4" />
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18593227_cooking-the-books-on-nyc-crime-arrest-avoidance-as-statistic.mp4" type="video/mp4" />
 </item>
 <item>
 <guid>agenda-18593477</guid>
@@ -50,39 +50,7 @@
 <description>For many newly arrived migrants, sex work is not a choice of profession but a &quot;mechanism of survival&quot; necessitated by the high cost of urban living and the inadequacies of the city&apos;s shelter system. This phenomenon, often termed &quot;survival sex,&quot; has led to &quot;corner fights&quot; between established sex workers and newcomers as territory on Roosevelt Avenue becomes increasingly overcrowded. Organizations like Colectivo report that the stress of the migration journey, combined with the lack of social s[snip]</description>
 <pubDate>Fri, 30 Jan 2026 03:00:00 +0000</pubDate>
 <link>https://www.youtube.com/watch?v=XpREu2IPc88</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18593477_new-york-city-market-of-bodies-prostitution-crisis.mp4" type="video/mp4" />
-</item>
-<item>
-<guid>agenda-18615085</guid>
-<title>12 Billion Dollar Forever Campaign</title>
-<description>The Shift to Digital and Connected TV (CTV) in Campaign Advertising We discuss the 2024 election&apos;s massive shift toward digital advertising, particularly the 506% growth in Connected TV (CTV) spending compared to 2020. This topic covers the strategic differences between parties, such as the Republican focus on mobilization via &quot;always-on&quot; digital strategies versus Democratic spending advantages on platforms like Google and Meta.</description>
-<pubDate>Tue, 03 Feb 2026 01:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=YUhxEMGA7p4</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18615085_12-billion-dollar-forever-campaign.mp4" type="video/mp4" />
-</item>
-<item>
-<guid>agenda-18615036</guid>
-<title>Dark Money Surge in the 2024 Election</title>
-<description>The &quot;Dark Money&quot; Surge in the 2024 Election We can discuss how undisclosed spending reached a record high of $1.9 billion in the 2024 federal election cycle, surpassing the previous record set in 2020. This includes an analysis of major 501(c)(4) &quot;dark money&quot; hubs like the Sixteen Thirty Fund on the left and Americans for Prosperity on the right, which funnel hundreds of millions of dollars into Super PACs and ballot measures while keeping donor identities secret.</description>
-<pubDate>Tue, 03 Feb 2026 01:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=zzDR_kFXoQQ</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18615036_dark-money-surge-in-the-2024-election.mp4" type="video/mp4" />
-</item>
-<item>
-<guid>agenda-18615004</guid>
-<title>Logistics of Protests in NYC</title>
-<description>The Economics and Logistics of Protests in NYC We can break down the financial and administrative barriers to organizing mass demonstrations in New York City. This includes the specific costs for permits (parade, sound device, street activity), insurance requirements that can exceed $4,000, daily surcharges for using court buildings, and the bureaucratic role of the Street Activity Permit Office (SAPO) and NYPD.</description>
-<pubDate>Tue, 03 Feb 2026 01:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=wg6VP7oFjqA</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18615004_logistics-of-protests-in-nyc.mp4" type="video/mp4" />
-</item>
-<item>
-<guid>agenda-18614990</guid>
-<title>Smith-Mundt Act and Domestic Propaganda</title>
-<description>The Evolution of the Smith-Mundt Act and Domestic Propaganda We can examine the legislative history of the Smith-Mundt Act of 1948, which originally prohibited the domestic dissemination of government-produced information (like Voice of America) to prevent propaganda. Discussion can include the controversial 2013 Modernization Act that repealed this ban, the arguments for transparency versus the risks of covert influence, and recent legislative attempts by Rep. Thomas Massie to reinstate the [snip]</description>
-<pubDate>Tue, 03 Feb 2026 01:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=1NFpq-cojDM</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18614990_smith-mundt-act-and-domestic-propaganda.mp4" type="video/mp4" />
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18593477_new-york-city-market-of-bodies-prostitution-crisis.mp4" type="video/mp4" />
 </item>
 <item>
 <guid>agenda-18614975</guid>
@@ -90,7 +58,39 @@
 <description>The &quot;Cinematic Presidency&quot; and Political Branding We can explore how political figures are using high-budget entertainment to shape their narratives and bypass traditional journalism. This includes a comparison of the $75 million production and marketing budget for the documentary Melania against the Obamas&apos; Higher Ground Productions ecosystem, which produces Academy Award-winning documentaries and scripted series like The G Word to frame government institutions positively.</description>
 <pubDate>Tue, 03 Feb 2026 01:00:00 +0000</pubDate>
 <link>https://www.youtube.com/watch?v=q-8GxagzZlI</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18614975_cinematic-presidency-and-political-branding.mp4" type="video/mp4" />
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18614975_cinematic-presidency-and-political-branding.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18614990</guid>
+<title>Smith-Mundt Act and Domestic Propaganda</title>
+<description>The Evolution of the Smith-Mundt Act and Domestic Propaganda We can examine the legislative history of the Smith-Mundt Act of 1948, which originally prohibited the domestic dissemination of government-produced information (like Voice of America) to prevent propaganda. Discussion can include the controversial 2013 Modernization Act that repealed this ban, the arguments for transparency versus the risks of covert influence, and recent legislative attempts by Rep. Thomas Massie to reinstate the [snip]</description>
+<pubDate>Tue, 03 Feb 2026 01:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=1NFpq-cojDM</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18614990_smith-mundt-act-and-domestic-propaganda.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18615004</guid>
+<title>Logistics of Protests in NYC</title>
+<description>The Economics and Logistics of Protests in NYC We can break down the financial and administrative barriers to organizing mass demonstrations in New York City. This includes the specific costs for permits (parade, sound device, street activity), insurance requirements that can exceed $4,000, daily surcharges for using court buildings, and the bureaucratic role of the Street Activity Permit Office (SAPO) and NYPD.</description>
+<pubDate>Tue, 03 Feb 2026 01:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=wg6VP7oFjqA</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18615004_logistics-of-protests-in-nyc.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18615036</guid>
+<title>Dark Money Surge in the 2024 Election</title>
+<description>The &quot;Dark Money&quot; Surge in the 2024 Election We can discuss how undisclosed spending reached a record high of $1.9 billion in the 2024 federal election cycle, surpassing the previous record set in 2020. This includes an analysis of major 501(c)(4) &quot;dark money&quot; hubs like the Sixteen Thirty Fund on the left and Americans for Prosperity on the right, which funnel hundreds of millions of dollars into Super PACs and ballot measures while keeping donor identities secret.</description>
+<pubDate>Tue, 03 Feb 2026 01:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=zzDR_kFXoQQ</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18615036_dark-money-surge-in-the-2024-election.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18615085</guid>
+<title>12 Billion Dollar Forever Campaign</title>
+<description>The Shift to Digital and Connected TV (CTV) in Campaign Advertising We discuss the 2024 election&apos;s massive shift toward digital advertising, particularly the 506% growth in Connected TV (CTV) spending compared to 2020. This topic covers the strategic differences between parties, such as the Republican focus on mobilization via &quot;always-on&quot; digital strategies versus Democratic spending advantages on platforms like Google and Meta.</description>
+<pubDate>Tue, 03 Feb 2026 01:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=YUhxEMGA7p4</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18615085_12-billion-dollar-forever-campaign.mp4" type="video/mp4" />
 </item>
 <item>
 <guid>agenda-18615761</guid>
@@ -98,47 +98,7 @@
 <description>The Financial Structure of the Melania Documentary We can detail the unprecedented financial deal behind the 2026 Melania documentary, including the $40 million licensing fee paid by Amazon MGM Studios and the reported $28 million personal payout to the former First Lady. This topic can also cover the film&apos;s reception, its &quot;blackout&quot; by critics, and the box office performance relative to its massive budget. Support the show</description>
 <pubDate>Tue, 03 Feb 2026 04:00:00 +0000</pubDate>
 <link>https://www.youtube.com/watch?v=mvqvZ8UPiFU</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18615761_amazon-75-million-dollar-gamble.mp4" type="video/mp4" />
-</item>
-<item>
-<guid>agenda-18621789</guid>
-<title>Protest Industry and Paid Agitators</title>
-<description>We discuss reports and allegations regarding the professionalization of protests, including warnings about &quot;paid agitators&quot; and &quot;crowd-for-hire&quot; companies influencing demonstrations. This topic touches on the commercial aspects of dissent and the potential for foreign influence in domestic protests. Support the show</description>
-<pubDate>Wed, 04 Feb 2026 02:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=uB8_REDCjTA</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18621789_protest-industry-and-paid-agitators.mp4" type="video/mp4" />
-</item>
-<item>
-<guid>agenda-18621774</guid>
-<title>US Federal Government Advertising</title>
-<description>US Federal Government Advertising and Public Relations Spending. We look at how the federal government spends approximately $1.5 billion annually on advertising and public relations. This includes a breakdown of top spenders like the Department of Defense (recruitment) and the Department of Health and Human Services, and the ethical debates surrounding the use of taxpayer funds for &quot;self-promotion&quot; or domestic influence campaigns. Support the show</description>
-<pubDate>Wed, 04 Feb 2026 02:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=qClFCYeFJoc</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18621774_us-federal-government-advertising.mp4" type="video/mp4" />
-</item>
-<item>
-<guid>agenda-18621769</guid>
-<title>Partisan Disparities in Digital Ad</title>
-<description>Partisan Disparities in Digital Ad Strategy - We analyze the Tech for Campaigns report indicating a &quot;strategy gap&quot; where Republicans treated political persuasion as an &quot;always-on&quot; game with heavy digital investment, while Democrats treated it as a seasonal sprint. This includes data on how commercial advertisers allocate 78% of budgets to digital while political campaigns lag at 36%. Support the show</description>
-<pubDate>Wed, 04 Feb 2026 02:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=gvDI-Meo2wk</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18621769_partisan-disparities-in-digital-ad.mp4" type="video/mp4" />
-</item>
-<item>
-<guid>agenda-18615786</guid>
-<title>Political Parties Are Just Financial Conglomerates</title>
-<description>Political Fundraising: Hybrid PACs and Small-Donor Platforms We can examine the dominance of hybrid PACs like ActBlue and WinRed, which process billions of dollars in donations and serve as the financial engines for their respective parties. Discussion can include how these platforms facilitate the flow of money between grassroots donors, candidate committees, and other political organizations. Support the show</description>
-<pubDate>Wed, 04 Feb 2026 02:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=spai95wQEtU</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18615786_political-parties-are-just-financial-conglomerates.mp4" type="video/mp4" />
-</item>
-<item>
-<guid>agenda-18615781</guid>
-<title>Obamas Cinematic Presidency</title>
-<description>Higher Ground Productions’ Content Strategy We can analyze how the Obamas’ production company utilizes a multi-year Netflix deal to produce content that aligns with their political values under the guise of entertainment. This includes projects like American Factory (labor rights), Crip Camp (disability advocacy), and children&apos;s programming like Waffles + Mochi (public health), effectively maintaining cultural influence post-presidency. Support the show</description>
-<pubDate>Wed, 04 Feb 2026 02:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=cFvtlqPyZjY</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18615781_obamas-cinematic-presidency.mp4" type="video/mp4" />
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18615761_amazon-75-million-dollar-gamble.mp4" type="video/mp4" />
 </item>
 <item>
 <guid>agenda-18615775</guid>
@@ -146,7 +106,47 @@
 <description>501(c)(3) vs. 501(c)(4): The Tax Code of Political Influence We can analyze the distinct rules governing different types of non-profit organizations. Topics include the absolute prohibition on political campaign intervention for 501(c)(3) charities (the &quot;Johnson Amendment&quot;) versus the ability of 501(c)(4) social welfare organizations to engage in partisan activity as a secondary purpose, effectively acting as &quot;dark money&quot; conduits. Support the show</description>
 <pubDate>Wed, 04 Feb 2026 02:00:00 +0000</pubDate>
 <link>https://www.youtube.com/watch?v=E6DMv-wQQEM</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18615775_charity-becomes-a-political-weapon.mp4" type="video/mp4" />
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18615775_charity-becomes-a-political-weapon.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18615781</guid>
+<title>Obamas Cinematic Presidency</title>
+<description>Higher Ground Productions’ Content Strategy We can analyze how the Obamas’ production company utilizes a multi-year Netflix deal to produce content that aligns with their political values under the guise of entertainment. This includes projects like American Factory (labor rights), Crip Camp (disability advocacy), and children&apos;s programming like Waffles + Mochi (public health), effectively maintaining cultural influence post-presidency. Support the show</description>
+<pubDate>Wed, 04 Feb 2026 02:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=cFvtlqPyZjY</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18615781_obamas-cinematic-presidency.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18615786</guid>
+<title>Political Parties Are Just Financial Conglomerates</title>
+<description>Political Fundraising: Hybrid PACs and Small-Donor Platforms We can examine the dominance of hybrid PACs like ActBlue and WinRed, which process billions of dollars in donations and serve as the financial engines for their respective parties. Discussion can include how these platforms facilitate the flow of money between grassroots donors, candidate committees, and other political organizations. Support the show</description>
+<pubDate>Wed, 04 Feb 2026 02:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=spai95wQEtU</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18615786_political-parties-are-just-financial-conglomerates.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18621769</guid>
+<title>Partisan Disparities in Digital Ad</title>
+<description>Partisan Disparities in Digital Ad Strategy - We analyze the Tech for Campaigns report indicating a &quot;strategy gap&quot; where Republicans treated political persuasion as an &quot;always-on&quot; game with heavy digital investment, while Democrats treated it as a seasonal sprint. This includes data on how commercial advertisers allocate 78% of budgets to digital while political campaigns lag at 36%. Support the show</description>
+<pubDate>Wed, 04 Feb 2026 02:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=gvDI-Meo2wk</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18621769_partisan-disparities-in-digital-ad.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18621774</guid>
+<title>US Federal Government Advertising</title>
+<description>US Federal Government Advertising and Public Relations Spending. We look at how the federal government spends approximately $1.5 billion annually on advertising and public relations. This includes a breakdown of top spenders like the Department of Defense (recruitment) and the Department of Health and Human Services, and the ethical debates surrounding the use of taxpayer funds for &quot;self-promotion&quot; or domestic influence campaigns. Support the show</description>
+<pubDate>Wed, 04 Feb 2026 02:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=qClFCYeFJoc</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18621774_us-federal-government-advertising.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18621789</guid>
+<title>Protest Industry and Paid Agitators</title>
+<description>We discuss reports and allegations regarding the professionalization of protests, including warnings about &quot;paid agitators&quot; and &quot;crowd-for-hire&quot; companies influencing demonstrations. This topic touches on the commercial aspects of dissent and the potential for foreign influence in domestic protests. Support the show</description>
+<pubDate>Wed, 04 Feb 2026 02:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=uB8_REDCjTA</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18621789_protest-industry-and-paid-agitators.mp4" type="video/mp4" />
 </item>
 <item>
 <guid>agenda-18631082</guid>
@@ -154,23 +154,7 @@
 <description>🎆 The Ultimate Birthday Bash: America 250 If you thought the Fourth of July was big before, prepare for Sail4th 250. To celebrate America’s semiquincentennial (that’s 250 years!), New York Harbor is hosting the largest international maritime gathering in U.S. history from July 3–9, 2026. • The Parade of Sail: On July 4, over 60 majestic tall ships from 20 nations and 40 naval vessels will glide under the Verrazzano Bridge and past the Statue of Liberty,. • Sky High: Look up! The U.S. Navy Blu[snip]</description>
 <pubDate>Thu, 05 Feb 2026 18:00:00 +0000</pubDate>
 <link>https://www.youtube.com/watch?v=arua-3k2-SA</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18631082_america-250-years-ultimate-birthday-plan.mp4" type="video/mp4" />
-</item>
-<item>
-<guid>agenda-18631206</guid>
-<title>Theater Life in New York City 2026</title>
-<description>Star-Studded Plays: • The Wizard Returns: Fresh off a Tony win, Daniel Radcliffe stars in the interactive solo play &quot;Every Brilliant Thing&quot; at the Hudson Theatre (previews Feb 21), listing everything that makes life worth living,. • A Heavy Hitter: Arthur Miller’s &quot;Death of a Salesman&quot; returns to the Winter Garden Theatre (previews March 6) with a heavyweight cast: Nathan Lane as Willy Loman and Laurie Metcalf as Linda Loman,. • Hollywood Talent: ◦ Adrien Brody and Tessa Thompso[snip]</description>
-<pubDate>Thu, 05 Feb 2026 18:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=LzcVaDQysgQ</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18631206_theater-life-in-new-york-city-2026.mp4" type="video/mp4" />
-</item>
-<item>
-<guid>agenda-18631183</guid>
-<title>New York City Musical Extravaganzas 2026</title>
-<description>The Musical Extravaganzas: • The Jellicle Ball is Back: Andrew Lloyd Webber’s Cats is being reborn as &quot;Cats: The Jellicle Ball&quot; at the Broadhurst Theatre (previews March 18). This isn&apos;t your grandma&apos;s feline musical; it’s reimagined within the Harlem Ballroom scene with a runway instead of a junkyard, starring the legendary André De Shields,. • Near, Far, Wherever You Are: The hilarious musical parody &quot;Titanique&quot;—which retells the Titanic story through the lens of Céline Dion—is finally crash[snip]</description>
-<pubDate>Thu, 05 Feb 2026 18:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=nOgrV6voHRA</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18631183_new-york-city-musical-extravaganzas-2026.mp4" type="video/mp4" />
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18631082_america-250-years-ultimate-birthday-plan.mp4" type="video/mp4" />
 </item>
 <item>
 <guid>agenda-18631161</guid>
@@ -178,7 +162,47 @@
 <description>⚽ The World’s Biggest Game Comes to Town Soccer fans, this is your Super Bowl times a thousand. The FIFA World Cup 2026 is taking over North America, and New York/New Jersey is at the center of the action. • The Final: The tournament culminates right here, with the FIFA World Cup Final match taking place at MetLife Stadium (temporarily dubbed &quot;New York New Jersey Stadium&quot;) on July 19, 2026. • Fan Fests: Expect the city to turn into one giant watch party. Liberty State Park will host the offic[snip]</description>
 <pubDate>Thu, 05 Feb 2026 18:00:00 +0000</pubDate>
 <link>https://www.youtube.com/watch?v=Bat5zt9lGKU</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18631161_usa-soccer-world-cup-this-year.mp4" type="video/mp4" />
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18631161_usa-soccer-world-cup-this-year.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18631183</guid>
+<title>New York City Musical Extravaganzas 2026</title>
+<description>The Musical Extravaganzas: • The Jellicle Ball is Back: Andrew Lloyd Webber’s Cats is being reborn as &quot;Cats: The Jellicle Ball&quot; at the Broadhurst Theatre (previews March 18). This isn&apos;t your grandma&apos;s feline musical; it’s reimagined within the Harlem Ballroom scene with a runway instead of a junkyard, starring the legendary André De Shields,. • Near, Far, Wherever You Are: The hilarious musical parody &quot;Titanique&quot;—which retells the Titanic story through the lens of Céline Dion—is finally crash...</description>
+<pubDate>Thu, 05 Feb 2026 18:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=nOgrV6voHRA</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18631183_new-york-city-musical-extravaganzas-2026.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18631206</guid>
+<title>Theater Life in New York City 2026</title>
+<description>Star-Studded Plays: • The Wizard Returns: Fresh off a Tony win, Daniel Radcliffe stars in the interactive solo play &quot;Every Brilliant Thing&quot; at the Hudson Theatre (previews Feb 21), listing everything that makes life worth living,. • A Heavy Hitter: Arthur Miller’s &quot;Death of a Salesman&quot; returns to the Winter Garden Theatre (previews March 6) with a heavyweight cast: Nathan Lane as Willy Loman and Laurie Metcalf as Linda Loman,. • Hollywood Talent: ◦ Adrien Brody and Tessa Thompso...</description>
+<pubDate>Thu, 05 Feb 2026 18:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=LzcVaDQysgQ</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18631206_theater-life-in-new-york-city-2026.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18633888</guid>
+<title>Gaga, Bon Jovi, Punjabi in Madison Square Garden 2026</title>
+<description>Madison Square Garden (The Garden): • Harry’s House (Again): Harry Styles is practically moving in. His &quot;Together, Together&quot; tour will play 30 shows from August 26 through October 31. Yes, thirty. • Gaga Returns: Lady Gaga brings her avant-garde &quot;The MAYHEM Ball&quot; to MSG for dates in March and April,. • Living on a Prayer: Bon Jovi hits the Garden for a residency with the &quot;Forever Tour&quot; in July (dates include July 7, 9, 12, 14),. • Punjabi Superstar: Diljit Dosanjh brings his &quot;Aura World Tour&quot;...</description>
+<pubDate>Fri, 06 Feb 2026 04:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=6AI3RqxTJGQ</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18633888_gaga-bon-jovi-punjabi-in-madison-square-garden-2026.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18633897</guid>
+<title>New York’s 2026 ArtQuake</title>
+<description>🎨 Art &amp;amp; Fashion: The Met Goes Meta The art world is matching the energy with groundbreaking exhibitions and fashion history in the making. • The Met Gala &amp;amp; Exhibition: The 2026 theme is &quot;Costume Art.&quot; It explores the body as art, paired with 5,000 years of history. The exhibition opens May 10, inaugurating the new Condé M. Nast Galleries right off the Great Hall. ◦ The Hosts: The Gala on May 4 will be co-chaired by Beyoncé, Nicole Kidman, Venus Williams, and Anna Wintour...</description>
+<pubDate>Fri, 06 Feb 2026 04:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=GNMcpoKIeGw</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18633897_new-york-s-2026-artquake.mp4" type="video/mp4" />
+</item>
+<item>
+<guid>agenda-18633902</guid>
+<title>NYC Concerts 2026: Barclays Center vs. Stadiums</title>
+<description>Barclays Center (Brooklyn): • Pop Royalty: Ariana Grande returns to the stage after a long hiatus with &quot;The Eternal Sunshine Tour,&quot; playing five nights in July (July 12-19),. • EDM Takeover: Martin Garrix brings his &quot;Americas Tour&quot; for a three-night run in June (June 11-13),. • Throwback: R&amp;amp;B legends New Edition (March 14) and B2K (March 28) are bringing the nostalgia to Brooklyn,. Stadium Spectacles (MetLife &amp;amp; UBS): • Thunderstruck: Hard rock legends AC/DC are bringing their &quot;Power U...</description>
+<pubDate>Fri, 06 Feb 2026 04:00:00 +0000</pubDate>
+<link>https://www.youtube.com/watch?v=edFJ_zTDej8</link>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18633902_nyc-concerts-2026-barclays-center-vs-stadiums.mp4" type="video/mp4" />
 </item>
 <item>
 <guid>agenda-18633907</guid>
@@ -186,31 +210,14 @@
 <description>• New York Fashion Week: The fashion elite descend on the city in February (11-16) and September (9-14) to define the next season&apos;s trends,. • New York Comic Con: Geek culture takes over the Javits Center for its 20th Anniversary from October 8-11. • Free Shakespeare: The Delacorte Theater in Central Park reopens with &quot;Romeo and Juliet&quot; and &quot;The Winter&apos;s Tale&quot; for its summer season. Support the show</description>
 <pubDate>Fri, 06 Feb 2026 04:00:00 +0000</pubDate>
 <link>https://www.youtube.com/watch?v=6RI4USIlxyA</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18633907_2026-ny-fashion-week-or-comic-con.mp4" type="video/mp4" />
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18633907_2026-ny-fashion-week-or-comic-con.mp4" type="video/mp4" />
 </item>
 <item>
-<guid>agenda-18633902</guid>
-<title>NYC Concerts 2026: Barclays Center vs. Stadiums</title>
-<description>Barclays Center (Brooklyn): • Pop Royalty: Ariana Grande returns to the stage after a long hiatus with &quot;The Eternal Sunshine Tour,&quot; playing five nights in July (July 12-19),. • EDM Takeover: Martin Garrix brings his &quot;Americas Tour&quot; for a three-night run in June (June 11-13),. • Throwback: R&amp;amp;B legends New Edition (March 14) and B2K (March 28) are bringing the nostalgia to Brooklyn,. Stadium Spectacles (MetLife &amp;amp; UBS): • Thunderstruck: Hard rock legends AC/DC are bringing their &quot;Power U[snip]</description>
-<pubDate>Fri, 06 Feb 2026 04:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=edFJ_zTDej8</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18633902_nyc-concerts-2026-barclays-center-vs-stadiums.mp4" type="video/mp4" />
-</item>
-<item>
-<guid>agenda-18633897</guid>
-<title>New York’s 2026 ArtQuake</title>
-<description>🎨 Art &amp;amp; Fashion: The Met Goes Meta The art world is matching the energy with groundbreaking exhibitions and fashion history in the making. • The Met Gala &amp;amp; Exhibition: The 2026 theme is &quot;Costume Art.&quot; It explores the body as art, paired with 5,000 years of history. The exhibition opens May 10, inaugurating the new Condé M. Nast Galleries right off the Great Hall. ◦ The Hosts: The Gala on May 4 will be co-chaired by Beyoncé, Nicole Kidman, Venus Williams, and Anna Wintour[snip]</description>
-<pubDate>Fri, 06 Feb 2026 04:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=GNMcpoKIeGw</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18633897_new-york-s-2026-artquake.mp4" type="video/mp4" />
-</item>
-<item>
-<guid>agenda-18633888</guid>
-<title>Gaga, Bon Jovi, Punjabi in Madison Square Garden 2026</title>
-<description>Madison Square Garden (The Garden): • Harry’s House (Again): Harry Styles is practically moving in. His &quot;Together, Together&quot; tour will play 30 shows from August 26 through October 31. Yes, thirty. • Gaga Returns: Lady Gaga brings her avant-garde &quot;The MAYHEM Ball&quot; to MSG for dates in March and April,. • Living on a Prayer: Bon Jovi hits the Garden for a residency with the &quot;Forever Tour&quot; in July (dates include July 7, 9, 12, 14),. • Punjabi Superstar: Diljit Dosanjh brings his &quot;Aura World Tour&quot;[snip]</description>
-<pubDate>Fri, 06 Feb 2026 04:00:00 +0000</pubDate>
-<link>https://www.youtube.com/watch?v=6AI3RqxTJGQ</link>
-<enclosure url="https://github.com/agenda-podcast/podcast-archive/releases/download/video-podcast/agenda-18633888_gaga-bon-jovi-punjabi-in-madison-square-garden-2026.mp4" type="video/mp4" />
+<guid>agenda-18644654</guid>
+<title>Street prostitution in New York City</title>
+<description>We examining the systemic public safety failures and organized crime networks surrounding open-air prostitution on Roosevelt Avenue in Queens. We highlight how these illicit markets serve as revenue engines for gangs, leading to increased violence, narcotics trafficking, and a degraded quality of life for local families. They argue that city management has failed to protect residents, specifically pointing to the psychological toll on children who witness solicitation near schools. To combat ...</description>
+<pubDate>Sun, 08 Feb 2026 19:00:00 +0000</pubDate>
+<enclosure url="https://github.com/agenda-podcast/newsroom/releases/download/video-podcast/agenda-18644654_street-prostitution-in-new-york-city.mp4" type="video/mp4" />
 </item>
 </channel>
 </rss>
