@@ -61,6 +61,12 @@ jobs:
           fi
           echo "GOOGLE_ACCESS_TOKEN=$TOKEN" >> "$GITHUB_ENV"
 
+      - name: Cleanup Google auth artifacts
+        if: always()
+        run: |
+          rm -f "${{ steps.auth.outputs.credentials_file_path }}" || true
+          rm -f gha-creds-*.json || true
+
       - name: Download and upload audio
         env:
           GOOGLE_ACCESS_TOKEN: "${{ env.GOOGLE_ACCESS_TOKEN }}"
