@@ -89,6 +89,10 @@ class PodcastConfig:
 
 
 def load_podcasts(path: str = DEFAULT_PODCASTS_PATH) -> Dict[str, PodcastConfig]:
+    # Be defensive: callers may pass None/empty from CLI/env wiring. In that case,
+    # fall back to the repo default location.
+    if not path:
+        path = DEFAULT_PODCASTS_PATH
     if not os.path.exists(path):
         raise FileNotFoundError(f"podcasts table not found: {path}")
     out: Dict[str, PodcastConfig] = {}
@@ -104,6 +108,8 @@ def load_podcasts(path: str = DEFAULT_PODCASTS_PATH) -> Dict[str, PodcastConfig]
 
 # Backward-compatible name used by workflows/scripts.
 def load_podcasts_table(path: str = DEFAULT_PODCASTS_PATH) -> Dict[str, PodcastConfig]:
+    if not path:
+        path = DEFAULT_PODCASTS_PATH
     return load_podcasts(path)
 
 

@@ -163,7 +163,8 @@ class EpisodesRequestsTable:
         return load_requests(self.path)
 
     def save(self, reqs: List[EpisodeRequest]) -> None:
-        save_requests(self.path, reqs)
+        # save_requests signature is (reqs, path=...).
+        save_requests(reqs, self.path)
 
     def iter_pending_requests(self, reqs: List[EpisodeRequest]) -> List[EpisodeRequest]:
         return [r for r in reqs if r.status.strip().upper() == TaskStatus.PENDING_REQUEST]
