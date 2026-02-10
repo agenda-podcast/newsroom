@@ -12,7 +12,7 @@ from .episodes_requests import (
 )
 from .podcasts_table import load_podcasts_table
 from .podcast_api_client import PodcastApiClient
-from .github_release import ensure_release, upload_asset
+from .github_release import get_or_create_release, upload_asset
 
 
 def _ensure_dir(p: Path) -> None:
@@ -65,7 +65,7 @@ def main() -> int:
             client.download_operation_audio(operation_name=r.operation_name, out_path=str(dest))
 
             # Upload to a GitHub release tag for durable storage.
-            release = ensure_release(tag=args.release_tag)
+            release = get_or_create_release(tag=args.release_tag)
             asset_name = f"{r.task_id}.mp3"
             download_url = upload_asset(release=release, file_path=str(dest), asset_name=asset_name)
             mark_downloaded(r, tag=args.release_tag, asset_name=asset_name, audio_url=download_url)

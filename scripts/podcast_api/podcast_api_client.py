@@ -1,130 +1,123 @@
 from __future__ import annotations
 
+import json
 import os
-import re
 import time
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
+from typing import Any, Dict, Optional, Sequence
 
 import requests
 
 
-DISCOVERYENGINE_BASE = "https://discoveryengine.googleapis.com"
+DISCOVERYENGINE_BASE = "https://discoveryengine.googleapis.com/v1"
 
 
 @dataclass
-class PodcastOperation:
+class Operation:
     name: str
+    done: bool = False
+    error: Optional[Dict[str, Any]] = None
 
 
-class PodcastApiError(RuntimeError):
-    pass
+class PodcastApiClient:
+    def __init__(self, *, project_id: str, access_token: str, location: str = "global") -> None:
+        if not project_id:
+            raise ValueError("project_id is required")
+        if not access_token:
+            raise ValueError("access_token is required")
+        self.project_id = project_id
+        self.location = location
+        self.access_token = access_token
 
-
-def _require_env(name: str) -> str:
-    val = (os.environ.get(name) or "").strip()
-    if not val:
-        raise PodcastApiError(f"Missing required environment variable: {name}")
-    return val
-
-
-def _clean_text(s: str) -> str:
-    s = re.sub(r"\s+", " ", s or "").strip()
-    return s
-
-
-def _truncate_utf8(s: str, max_chars: int) -> str:
-    s = s or ""
-    if len(s) <= max_chars:
-        return s
-    return s[:max_chars]
-
-
-def create_podcast(
-    *,
-    project_id: str,
-    access_token: str,
-    title: str,
-    description: str,
-    focus: str,
-    length: str = "STANDARD",
-    language_code: str = "en-us",
-    contexts: Optional[List[str]] = None,
-    timeout_sec: int = 60,
-) -> PodcastOperation:
-    url = f"{DISCOVERYENGINE_BASE}/v1/projects/{project_id}/locations/global/podcasts"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-        "Content-Type": "application/json",
-    }
-
-    req_contexts = []
-    for c in (contexts or []):
-        c = _clean_text(c)
-        if not c:
-            continue
-        req_contexts.append({"text": _truncate_utf8(c, 20000)})
-
-    payload = {
-        "podcastConfig": {
-            "focus": _truncate_utf8(focus, 2000),
-            "length": length or "STANDARD",
-            "languageCode": language_code or "en-us",
-            "contexts": req_contexts,
-            "title": _truncate_utf8(title, 200),
-            "description": _truncate_utf8(description, 2000),
+    def _headers(self) -> Dict[str, str]:
+        return {
+            "Authorization": f"Bearer {self.access_token}",
+            "Content-Type": "application/json; charset=utf-8",
         }
-    }
 
-    r = requests.post(url, headers=headers, json=payload, timeout=timeout_sec)
-    if r.status_code >= 300:
-        raise PodcastApiError(f"create_podcast failed: http={r.status_code} body={r.text}")
+    def create_podcast(
+        self,
+        *,
+        contexts: Sequence[Any],
+        focus: str,
+        length: str = "STANDARD",
+        language_code: str = "en-us",
+        title: str = "",
+        description: str = "",
+    ) -> Operation:
+        # Backward-compatible wrapper:
+        # - contexts may be list[str] (already cleaned text) OR list[dict] (contexts objects)
+        # - focus maps to the request "text" (custom prompt)
+        ctx_objs: list[dict] = []
+        for c in contexts:
+            if isinstance(c, dict):
+                ctx_objs.append(c)
+            else:
+                s = str(c).strip()
+                if not s:
+                    continue
+                ctx_objs.append({"text": s})
 
-    data = r.json() if r.text else {}
-    name = (data.get("name") or "").strip()
-    if not name:
-        raise PodcastApiError(f"create_podcast returned no operation name: {data}")
-    return PodcastOperation(name=name)
+        endpoint = f"{DISCOVERYENGINE_BASE}/projects/{self.project_id}/locations/{self.location}/podcasts"
+        payload: Dict[str, Any] = {
+            "content": {
+                "text": focus,
+                "conversationLength": length,
+                "languageCode": language_code,
+                "contexts": ctx_objs,
+            }
+        }
+        if title:
+            payload["title"] = title
+        if description:
+            payload["description"] = description
 
+        r = requests.post(endpoint, headers=self._headers(), data=json.dumps(payload), timeout=120)
+        r.raise_for_status()
+        data = r.json()
+        name = (data.get("name") or "").strip()
+        if not name:
+            raise RuntimeError(f"podcast create response missing name: {data}")
+        return Operation(name=name, done=False)
 
-def download_podcast_audio(
-    *,
-    operation_name: str,
-    access_token: str,
-    timeout_sec: int = 600,
-    poll_until_done: bool = True,
-    poll_interval_sec: int = 10,
-    poll_timeout_sec: int = 3600,
-) -> bytes:
-    op_name = operation_name.strip()
-    if not op_name:
-        raise PodcastApiError("operation_name is empty")
+    def get_operation(self, name: str) -> Operation:
+        if name.startswith("projects/"):
+            op_url = f"{DISCOVERYENGINE_BASE}/{name}"
+        else:
+            op_url = f"{DISCOVERYENGINE_BASE}/{name.lstrip('/')}"
+        r = requests.get(op_url, headers=self._headers(), timeout=60)
+        r.raise_for_status()
+        data = r.json()
+        return Operation(
+            name=data.get("name", name),
+            done=bool(data.get("done")),
+            error=data.get("error"),
+        )
 
-    headers = {"Authorization": f"Bearer {access_token}"}
-
-    if poll_until_done:
-        op_url = f"{DISCOVERYENGINE_BASE}/v1/{op_name}"
+    def wait_operation_done(self, name: str, *, timeout_sec: int = 3600, poll_sec: int = 15) -> Operation:
         start = time.time()
         while True:
-            r = requests.get(op_url, headers=headers, timeout=60)
-            if r.status_code >= 300:
-                raise PodcastApiError(f"poll operation failed: http={r.status_code} body={r.text}")
-            op = r.json() if r.text else {}
-            if op.get("done") is True:
-                break
-            if time.time() - start > poll_timeout_sec:
-                raise PodcastApiError("poll timeout exceeded")
-            time.sleep(poll_interval_sec)
+            op = self.get_operation(name)
+            if op.done:
+                return op
+            if time.time() - start > timeout_sec:
+                raise TimeoutError(f"operation not done after {timeout_sec}s: {name}")
+            time.sleep(poll_sec)
 
-        if "error" in op:
-            raise PodcastApiError(f"operation error: {op.get('error')}")
-
-    dl_url = f"{DISCOVERYENGINE_BASE}/v1/{op_name}:download?alt=media"
-    r = requests.get(dl_url, headers=headers, timeout=timeout_sec)
-    if r.status_code >= 300:
-        raise PodcastApiError(f"download failed: http={r.status_code} body={r.text}")
-    return r.content
-
-
-def require_access_token() -> str:
-    return _require_env("GOOGLE_ACCESS_TOKEN")
+    def download_operation_audio(self, operation_name: str, dst_path: str) -> None:
+        # GET https://discoveryengine.googleapis.com/v1/OPERATION_NAME:download?alt=media
+        if not operation_name.startswith("projects/"):
+            operation_name = operation_name.lstrip("/")
+        url = f"{DISCOVERYENGINE_BASE}/{operation_name}:download?alt=media"
+        with requests.get(
+            url,
+            headers={"Authorization": f"Bearer {self.access_token}"},
+            stream=True,
+            timeout=300,
+        ) as r:
+            r.raise_for_status()
+            os.makedirs(os.path.dirname(dst_path), exist_ok=True)
+            with open(dst_path, "wb") as f:
+                for chunk in r.iter_content(chunk_size=1024 * 1024):
+                    if chunk:
+                        f.write(chunk)
