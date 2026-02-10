@@ -1,226 +1,263 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import os
+import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
-from typing import List
+from pathlib import Path
+from typing import Dict, List, Optional
 
-from .episodes_requests import EpisodeRequest, load_requests
-from .podcasts_table import PodcastConfig, load_podcasts_table
+from .episodes_requests import EpisodesRequestsTable, EpisodeRequest
 
-
-ATOM_NS = "http://www.w3.org/2005/Atom"
-ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
-GOOGLEPLAY_NS = "http://www.google.com/schemas/play-podcasts/1.0"
-PODCAST_NS = "https://podcastindex.org/namespace/1.0"
-
-
-def _xml_escape(s: str) -> str:
-    return (
-        s.replace("&", "&amp;")
-        .replace("<", "&lt;")
-        .replace(">", "&gt;")
-        .replace('"', "&quot;")
-        .replace("'", "&apos;")
-    )
+NS_ATOM = "http://www.w3.org/2005/Atom"
+NS_ITUNES = "http://www.itunes.com/dtds/podcast-1.0.dtd"
+NS_GOOGLEPLAY = "http://www.google.com/schemas/play-podcasts/1.0"
+NS_PODCAST = "https://podcastindex.org/namespace/1.0"
+NS_CONTENT = "http://purl.org/rss/1.0/modules/content/"
 
 
-def _bool_str(v: str) -> str:
-    v2 = (v or "").strip().lower()
-    if v2 in ("yes", "true", "1"):
-        return "yes"
-    if v2 in ("no", "false", "0"):
-        return "no"
-    return v2 or "no"
-
-
-def _rfc2822_now() -> str:
+def _utc_now_rfc822() -> str:
+    # Example: "Mon, 09 Feb 2026 02:10:00 +0000"
     return datetime.now(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S %z")
 
 
-def _item_pubdate(req: EpisodeRequest) -> str:
-    # Prefer downloaded timestamp, else requested timestamp.
-    iso = req.downloaded_at_utc or req.requested_at_utc
-    if not iso:
-        return _rfc2822_now()
+def _iso_to_rfc822(s: str) -> Optional[str]:
+    s = (s or "").strip()
+    if not s:
+        return None
     try:
-        dt = datetime.fromisoformat(iso.replace("Z", "+00:00"))
+        # Accept: 2026-02-08T19:00:00Z or with offset
+        if s.endswith("Z"):
+            dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
+        else:
+            dt = datetime.fromisoformat(s)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
         return dt.astimezone(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S %z")
     except Exception:
-        return _rfc2822_now()
+        return None
 
 
-def build_rss_for_podcast(pcfg: PodcastConfig, requests: List[EpisodeRequest]) -> str:
-    # Channel-level metadata.
-    title = pcfg.podcast_name
-    link = pcfg.site_url
-    desc = pcfg.description or pcfg.summary or pcfg.podcast_name
+def _read_podcasts_table(path: str) -> Dict[str, Dict[str, str]]:
+    out: Dict[str, Dict[str, str]] = {}
+    with open(path, newline="", encoding="utf-8") as f:
+        r = csv.DictReader(f)
+        if not r.fieldnames or "podcast_id" not in r.fieldnames:
+            raise SystemExit(f"podcasts table missing podcast_id: {path}")
+        for row in r:
+            pid = (row.get("podcast_id") or "").strip()
+            if not pid:
+                continue
+            out[pid] = {k: (v or "").strip() for k, v in row.items()}
+    return out
 
-    # Namespace declarations (max compatibility across podcast apps).
-    hdr = (
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<rss version=\"2.0\"\n"
-        f"  xmlns:atom=\"{ATOM_NS}\"\n"
-        f"  xmlns:itunes=\"{ITUNES_NS}\"\n"
-        f"  xmlns:googleplay=\"{GOOGLEPLAY_NS}\"\n"
-        f"  xmlns:podcast=\"{PODCAST_NS}\"\n"
-        ">\n"
-        "<channel>\n"
-    )
 
-    parts: List[str] = [hdr]
-    parts.append(f"  <title>{_xml_escape(title)}</title>\n")
-    parts.append(f"  <link>{_xml_escape(link)}</link>\n")
-    parts.append(f"  <description>{_xml_escape(desc)}</description>\n")
-    if pcfg.language:
-        parts.append(f"  <language>{_xml_escape(pcfg.language)}</language>\n")
-    parts.append(f"  <lastBuildDate>{_rfc2822_now()}</lastBuildDate>\n")
-    parts.append("  <generator>podcast-archive</generator>\n")
+def _t(parent: ET.Element, tag: str, text: str) -> None:
+    if not text:
+        return
+    el = ET.SubElement(parent, tag)
+    el.text = text
 
-    # atom self link
-    self_url = pcfg.atom_self_url or ""
+
+def _t_ns(parent: ET.Element, ns: str, tag: str, text: str, attrib: Optional[dict] = None) -> None:
+    if not text:
+        return
+    el = ET.SubElement(parent, f"{{{ns}}}{tag}", attrib=attrib or {})
+    el.text = text
+
+
+def _set_channel_metadata(channel: ET.Element, pcfg: Dict[str, str]) -> None:
+    # Core RSS 2.0
+    _t(channel, "title", pcfg.get("show_title", ""))
+    _t(channel, "link", pcfg.get("show_website_url", ""))
+    _t(channel, "description", pcfg.get("show_description", ""))
+    _t(channel, "language", pcfg.get("language", ""))
+    _t(channel, "copyright", pcfg.get("copyright", ""))
+
+    lbd = pcfg.get("last_build_date", "")
+    _t(channel, "lastBuildDate", _iso_to_rfc822(lbd) or _utc_now_rfc822())
+
+    # Atom self link (helps aggregators)
+    self_url = pcfg.get("feed_self_url", "")
     if self_url:
-        parts.append(
-            f"  <atom:link href=\"{_xml_escape(self_url)}\" rel=\"self\" type=\"application/rss+xml\" />\n"
+        ET.SubElement(
+            channel,
+            f"{{{NS_ATOM}}}link",
+            attrib={"href": self_url, "rel": "self", "type": "application/rss+xml"},
         )
 
-    # Image
-    img_url = pcfg.image_url or ""
-    if img_url:
-        parts.append("  <image>\n")
-        parts.append(f"    <url>{_xml_escape(img_url)}</url>\n")
-        parts.append(f"    <title>{_xml_escape(title)}</title>\n")
-        parts.append(f"    <link>{_xml_escape(link)}</link>\n")
-        parts.append("  </image>\n")
+    # RSS image
+    art = pcfg.get("show_artwork_url_or_path", "")
+    if art:
+        img = ET.SubElement(channel, "image")
+        _t(img, "url", art)
+        _t(img, "title", pcfg.get("show_title", ""))
+        _t(img, "link", pcfg.get("show_website_url", ""))
 
-    # iTunes tags
-    if pcfg.author:
-        parts.append(f"  <itunes:author>{_xml_escape(pcfg.author)}</itunes:author>\n")
-    if pcfg.summary:
-        parts.append(f"  <itunes:summary>{_xml_escape(pcfg.summary)}</itunes:summary>\n")
-    parts.append(f"  <itunes:explicit>{_xml_escape(_bool_str(pcfg.explicit))}</itunes:explicit>\n")
-    if img_url:
-        parts.append(f"  <itunes:image href=\"{_xml_escape(img_url)}\" />\n")
-    if pcfg.owner_name or pcfg.owner_email:
-        parts.append("  <itunes:owner>\n")
-        if pcfg.owner_name:
-            parts.append(f"    <itunes:name>{_xml_escape(pcfg.owner_name)}</itunes:name>\n")
-        if pcfg.owner_email:
-            parts.append(f"    <itunes:email>{_xml_escape(pcfg.owner_email)}</itunes:email>\n")
-        parts.append("  </itunes:owner>\n")
-    if pcfg.keywords:
-        parts.append(f"  <itunes:keywords>{_xml_escape(pcfg.keywords)}</itunes:keywords>\n")
-    if pcfg.itunes_type:
-        parts.append(f"  <itunes:type>{_xml_escape(pcfg.itunes_type)}</itunes:type>\n")
-    if pcfg.itunes_new_feed_url:
-        parts.append(f"  <itunes:new-feed-url>{_xml_escape(pcfg.itunes_new_feed_url)}</itunes:new-feed-url>\n")
-    if pcfg.itunes_block:
-        parts.append(f"  <itunes:block>{_xml_escape(_bool_str(pcfg.itunes_block))}</itunes:block>\n")
-    if pcfg.itunes_complete:
-        parts.append(f"  <itunes:complete>{_xml_escape(_bool_str(pcfg.itunes_complete))}</itunes:complete>\n")
+    # iTunes show-level tags
+    _t_ns(channel, NS_ITUNES, "author", pcfg.get("author_name", ""))
+    # Many platforms map summary/subtitle from description if not provided separately.
+    _t_ns(channel, NS_ITUNES, "summary", pcfg.get("show_description", ""))
+    _t_ns(channel, NS_ITUNES, "subtitle", pcfg.get("show_title", ""))
 
-    # iTunes categories (primary + optional secondary)
-    if pcfg.category:
-        parts.append(f"  <itunes:category text=\"{_xml_escape(pcfg.category)}\">")
-        if pcfg.subcategory:
-            parts.append(f"<itunes:category text=\"{_xml_escape(pcfg.subcategory)}\" />")
-        parts.append("</itunes:category>\n")
+    owner_name = pcfg.get("owner_name", "")
+    owner_email = pcfg.get("owner_email", "")
+    if owner_name or owner_email:
+        owner = ET.SubElement(channel, f"{{{NS_ITUNES}}}owner")
+        _t(owner, f"{{{NS_ITUNES}}}name", owner_name)
+        _t(owner, f"{{{NS_ITUNES}}}email", owner_email)
 
-    # Google Play tags
-    if pcfg.googleplay_author:
-        parts.append(
-            f"  <googleplay:author>{_xml_escape(pcfg.googleplay_author)}</googleplay:author>\n"
-        )
-    if pcfg.googleplay_email:
-        parts.append(
-            f"  <googleplay:email>{_xml_escape(pcfg.googleplay_email)}</googleplay:email>\n"
-        )
-    if pcfg.googleplay_category:
-        parts.append(
-            f"  <googleplay:category text=\"{_xml_escape(pcfg.googleplay_category)}\" />\n"
-        )
-    if img_url:
-        parts.append(
-            f"  <googleplay:image href=\"{_xml_escape(img_url)}\" />\n"
-        )
-    parts.append(
-        f"  <googleplay:explicit>{_xml_escape(_bool_str(pcfg.explicit))}</googleplay:explicit>\n"
-    )
-    if pcfg.description:
-        parts.append(
-            f"  <googleplay:description>{_xml_escape(pcfg.description)}</googleplay:description>\n"
+    if art:
+        ET.SubElement(channel, f"{{{NS_ITUNES}}}image", attrib={"href": art})
+
+    _t_ns(channel, NS_ITUNES, "explicit", pcfg.get("explicit", ""))
+    _t_ns(channel, NS_ITUNES, "type", pcfg.get("podcast_type", ""))
+    _t_ns(channel, NS_ITUNES, "complete", pcfg.get("is_complete", ""))
+    _t_ns(channel, NS_ITUNES, "block", pcfg.get("is_blocked", ""))
+    _t_ns(channel, NS_ITUNES, "new-feed-url", pcfg.get("new_feed_url", ""))
+    _t_ns(channel, NS_ITUNES, "keywords", pcfg.get("keywords", ""))
+
+    for k in ("category_1", "category_2", "category_3"):
+        cat = pcfg.get(k, "")
+        if cat:
+            ET.SubElement(channel, f"{{{NS_ITUNES}}}category", attrib={"text": cat})
+
+    # Google Podcasts (a.k.a. Google Play podcasts schema)
+    _t_ns(channel, NS_GOOGLEPLAY, "author", pcfg.get("author_name", ""))
+    _t_ns(channel, NS_GOOGLEPLAY, "description", pcfg.get("show_description", ""))
+    if art:
+        _t_ns(channel, NS_GOOGLEPLAY, "image", art)
+    _t_ns(channel, NS_GOOGLEPLAY, "explicit", pcfg.get("explicit", ""))
+    _t_ns(channel, NS_GOOGLEPLAY, "block", pcfg.get("is_blocked", ""))
+    for k in ("category_1", "category_2", "category_3"):
+        cat = pcfg.get(k, "")
+        if cat:
+            _t_ns(channel, NS_GOOGLEPLAY, "category", cat)
+
+    # Podcast Namespace (PodcastIndex)
+    _t_ns(channel, NS_PODCAST, "guid", pcfg.get("global_guid", ""))
+
+    locked = pcfg.get("locked", "").lower()
+    if locked in ("yes", "true", "1"):
+        owner = pcfg.get("owner_email", "")
+        ET.SubElement(channel, f"{{{NS_PODCAST}}}locked", attrib={"owner": owner}).text = "yes"
+
+    for idx in ("1", "2"):
+        url = pcfg.get(f"funding_url_{idx}", "")
+        text = pcfg.get(f"funding_text_{idx}", "")
+        if url:
+            _t_ns(channel, NS_PODCAST, "funding", text or url, attrib={"url": url})
+
+    loc = pcfg.get("location", "")
+    if loc:
+        _t_ns(channel, NS_PODCAST, "location", loc)
+
+    trailer = pcfg.get("trailer_url", "")
+    if trailer:
+        ET.SubElement(channel, f"{{{NS_PODCAST}}}trailer", attrib={"url": trailer})
+
+
+def _add_item(channel: ET.Element, r: EpisodeRequest, pcfg: Dict[str, str]) -> None:
+    item = ET.SubElement(channel, "item")
+    _t(item, "title", r.title)
+    if r.task_id:
+        ET.SubElement(item, "guid", attrib={"isPermaLink": "false"}).text = r.task_id
+
+    pub = _iso_to_rfc822(r.downloaded_at_utc) or _iso_to_rfc822(r.requested_at_utc) or _utc_now_rfc822()
+    _t(item, "pubDate", pub)
+
+    # Enclosure
+    if r.audio_url:
+        ET.SubElement(
+            item,
+            "enclosure",
+            attrib={"url": r.audio_url, "length": "0", "type": "audio/mpeg"},
         )
 
-    # Podcasting 2.0 tags (best-effort)
-    if pcfg.podcast_locked:
-        parts.append(
-            f"  <podcast:locked>{_xml_escape(_bool_str(pcfg.podcast_locked))}</podcast:locked>\n"
-        )
-    if pcfg.podcast_guid:
-        parts.append(f"  <podcast:guid>{_xml_escape(pcfg.podcast_guid)}</podcast:guid>\n")
-    if pcfg.podcast_medium:
-        parts.append(
-            f"  <podcast:medium>{_xml_escape(pcfg.podcast_medium)}</podcast:medium>\n"
-        )
+    # Descriptions: plain + content:encoded for maximum compatibility.
+    _t(item, "description", r.description)
+    if r.description:
+        _t_ns(item, NS_CONTENT, "encoded", r.description)
 
-    # Items: DONE tasks only.
-    done = [r for r in requests if (r.status or "").strip().upper() == "DONE" and r.audio_url]
-    # Stable order: by downloaded timestamp then task_id
-    done.sort(key=lambda r: (r.downloaded_at_utc or "", r.task_id))
+    # Platform-specific episode tags
+    _t_ns(item, NS_ITUNES, "author", pcfg.get("author_name", ""))
+    _t_ns(item, NS_ITUNES, "explicit", pcfg.get("explicit", ""))
 
-    for r in done:
-        guid = r.task_id or r.operation_name or r.audio_url
-        item_title = r.title or f"Audio overview {r.task_id}"
-        item_desc = r.description or r.custom_prompt or "Audio overview generated by Podcast API."
-        enclosure_url = r.audio_url
+    _t_ns(item, NS_GOOGLEPLAY, "author", pcfg.get("author_name", ""))
+    _t_ns(item, NS_GOOGLEPLAY, "explicit", pcfg.get("explicit", ""))
 
-        parts.append("  <item>\n")
-        parts.append(f"    <title>{_xml_escape(item_title)}</title>\n")
-        parts.append(f"    <description>{_xml_escape(item_desc)}</description>\n")
-        parts.append(f"    <guid isPermaLink=\"false\">{_xml_escape(guid)}</guid>\n")
-        parts.append(f"    <pubDate>{_item_pubdate(r)}</pubDate>\n")
-        parts.append(
-            f"    <enclosure url=\"{_xml_escape(enclosure_url)}\" type=\"audio/mpeg\" />\n"
-        )
-        # iTunes episode-level tags (best-effort)
-        parts.append(f"    <itunes:explicit>{_xml_escape(_bool_str(pcfg.explicit))}</itunes:explicit>\n")
-        parts.append("  </item>\n")
 
-    parts.append("</channel>\n</rss>\n")
-    return "".join(parts)
+def _write_xml(path: Path, root: ET.Element) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tree = ET.ElementTree(root)
+    tree.write(path, encoding="utf-8", xml_declaration=True)
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Build audio RSS per podcast_id from completed episode requests")
-    ap.add_argument("--podcasts", default=os.path.join("data", "video-data", "podcasts.csv"))
-    ap.add_argument("--requests", default=os.path.join("data", "video-data", "episodes_requests.csv"))
+    ap = argparse.ArgumentParser(description="Build RSS feeds from completed Podcast API audio requests")
+    ap.add_argument("--requests", default=os.environ.get("EPISODES_REQUESTS", "data/video-data/episodes_requests.csv"))
+    ap.add_argument("--podcasts", default=os.environ.get("PODCASTS_TABLE", "data/video-data/podcasts.csv"))
     args = ap.parse_args()
 
-    podcasts = load_podcasts_table(args.podcasts)
-    reqs = load_requests(args.requests)
+    # Register namespaces so ElementTree emits stable prefixes.
+    ET.register_namespace("atom", NS_ATOM)
+    ET.register_namespace("itunes", NS_ITUNES)
+    ET.register_namespace("googleplay", NS_GOOGLEPLAY)
+    ET.register_namespace("podcast", NS_PODCAST)
+    ET.register_namespace("content", NS_CONTENT)
 
-    # Group by podcast_id
-    by_pid = {}
+    podcasts = _read_podcasts_table(args.podcasts)
+    table = EpisodesRequestsTable(args.requests)
+    reqs = table.load()
+
+    by_podcast: Dict[str, List[EpisodeRequest]] = {}
     for r in reqs:
-        pid = (r.podcast_id or "").strip()
-        if not pid:
+        if r.status != "DOWNLOADED":
             continue
-        by_pid.setdefault(pid, []).append(r)
-
-    wrote_any = False
-    for pid, pcfg in podcasts.items():
-        out_path = pcfg.audio_rss_path
-        if not out_path:
+        if not r.podcast_id:
             continue
-        rss = build_rss_for_podcast(pcfg, by_pid.get(pid, []))
-        os.makedirs(os.path.dirname(out_path), exist_ok=True)
-        with open(out_path, "w", encoding="utf-8", newline="\n") as f:
-            f.write(rss)
-        print(f"[rss] wrote {out_path} podcast_id={pid} items={len([r for r in by_pid.get(pid, []) if (r.status or '').upper()=='DONE'])}")
-        wrote_any = True
+        by_podcast.setdefault(r.podcast_id, []).append(r)
 
-    if not wrote_any:
-        print("[rss] nothing to write (no podcasts with audio_rss_path)")
+    for pid, items in by_podcast.items():
+        pcfg = podcasts.get(pid)
+        if not pcfg:
+            print(f"[build_rss][warn] missing podcasts.csv row for podcast_id={pid}")
+            continue
+
+        rss_path = (pcfg.get("audio_rss_path") or "").strip()
+        if not rss_path:
+            # Default if missing.
+            rss_path = f"feed/audio_{pid}.xml"
+
+        rss = ET.Element(
+            "rss",
+            attrib={
+                "version": "2.0",
+                f"xmlns:atom": NS_ATOM,
+                f"xmlns:itunes": NS_ITUNES,
+                f"xmlns:googleplay": NS_GOOGLEPLAY,
+                f"xmlns:podcast": NS_PODCAST,
+                f"xmlns:content": NS_CONTENT,
+            },
+        )
+        channel = ET.SubElement(rss, "channel")
+        _set_channel_metadata(channel, pcfg)
+
+        # Determinism: order by downloaded_at then task_id.
+        items_sorted = sorted(
+            items,
+            key=lambda x: (
+                x.downloaded_at_utc or x.requested_at_utc or "",
+                x.task_id,
+            ),
+        )
+        for r in items_sorted:
+            _add_item(channel, r, pcfg)
+
+        _write_xml(Path(rss_path), rss)
+        print(f"[build_rss] wrote {rss_path} items={len(items_sorted)} podcast_id={pid}")
+
     return 0
 
 
