@@ -59,21 +59,26 @@ class PodcastApiClient:
                 ctx_objs.append({"text": s})
 
         endpoint = f"{DISCOVERYENGINE_BASE}/projects/{self.project_id}/locations/{self.location}/podcasts"
+        # Request schema (Generate podcasts API):
+        # https://cloud.google.com/generative-ai-app-builder/docs/reference/rest/v1/projects.locations/podcasts
         payload: Dict[str, Any] = {
-            "content": {
-                "text": focus,
-                "conversationLength": length,
+            "podcastConfig": {
+                "focus": focus,
+                "length": length,
                 "languageCode": language_code,
-                "contexts": ctx_objs,
-            }
+            },
+            "contexts": ctx_objs,
+            "title": title or "",
+            "description": description or "",
         }
-        if title:
-            payload["title"] = title
-        if description:
-            payload["description"] = description
 
         r = requests.post(endpoint, headers=self._headers(), data=json.dumps(payload), timeout=120)
-        r.raise_for_status()
+        try:
+            r.raise_for_status()
+        except requests.HTTPError as e:
+            # Include response body to make API troubleshooting actionable.
+            body = (r.text or "").strip()
+            raise RuntimeError(f"podcast create failed: http={r.status_code} body={body}") from e
         data = r.json()
         name = (data.get("name") or "").strip()
         if not name:

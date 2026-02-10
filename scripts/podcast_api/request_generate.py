@@ -50,8 +50,9 @@ def main() -> int:
     table = EpisodesRequestsTable(args.table)
     reqs = table.load()
 
-    processed = 0
-    while processed < args.max_tasks:
+    attempted = 0
+    succeeded = 0
+    while attempted < args.max_tasks:
         r = find_next_for_request(reqs)
         if not r:
             break
@@ -60,7 +61,7 @@ def main() -> int:
         project_id = (args.project_id or (pc.gcp_project_id if pc else "")).strip()
         if not project_id:
             mark_failed_request(r, "Missing gcp_project_id")
-            processed += 1
+            attempted += 1
             continue
 
         length = (
@@ -84,14 +85,15 @@ def main() -> int:
             )
             mark_requested(r, operation_name=op.name)
             print(f"[podcast_api] requested task_id={r.task_id} op={op.name}")
+            succeeded += 1
         except Exception as e:
             mark_failed_request(r, str(e))
             print(f"[podcast_api][warn] request failed task_id={r.task_id} err={e}")
 
-        processed += 1
+        attempted += 1
 
     table.save(reqs)
-    print(f"[podcast_api] requested_count={processed}")
+    print(f"[podcast_api] attempted_count={attempted} requested_count={succeeded}")
     return 0
 
 
