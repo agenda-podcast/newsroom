@@ -24,7 +24,13 @@ def main() -> int:
     ap.add_argument("--table", default=os.environ.get("EPISODES_REQUESTS", "data/video-data/episodes_requests.csv"))
     ap.add_argument("--podcasts", default=os.environ.get("PODCASTS_TABLE", "data/video-data/podcasts.csv"))
     ap.add_argument("--out_dir", default=os.environ.get("AUDIO_OUT_DIR", "work/podcast-api-audio"))
-    ap.add_argument("--release_tag", default=os.environ.get("AUDIO_RELEASE_TAG", "audio-archive"))
+    # Support both snake_case and kebab-case for convenience.
+    ap.add_argument(
+        "--release_tag",
+        "--release-tag",
+        dest="release_tag",
+        default=os.environ.get("AUDIO_RELEASE_TAG", "audio-archive"),
+    )
     ap.add_argument("--max", type=int, default=int(os.environ.get("MAX_TASKS", "10")))
     args = ap.parse_args()
 
@@ -62,7 +68,8 @@ def main() -> int:
 
         try:
             dest = out_dir / f"{r.task_id}.mp3"
-            client.download_operation_audio(operation_name=r.operation_name, out_path=str(dest))
+            # PodcastApiClient uses dst_path.
+            client.download_operation_audio(operation_name=r.operation_name, dst_path=str(dest))
 
             # Upload to a GitHub release tag for durable storage.
             release = get_or_create_release(tag=args.release_tag)

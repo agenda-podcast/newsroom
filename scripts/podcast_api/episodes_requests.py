@@ -86,13 +86,26 @@ def load_requests(path: str = DEFAULT_TABLE_PATH) -> List[EpisodeRequest]:
 
     with open(path, "r", encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
-        rows = []
+        rows: List[EpisodeRequest] = []
+        data_rows = 0
+        skipped_comment = 0
         for row in reader:
             # Allow comment rows (starting with '#')
             tid = (row.get("task_id") or "").strip()
-            if not tid or tid.startswith("#"):
+            if not tid:
+                continue
+            data_rows += 1
+            if tid.startswith("#"):
+                skipped_comment += 1
                 continue
             rows.append(EpisodeRequest.from_row(row))
+
+        if data_rows > 0 and not rows and skipped_comment == data_rows:
+            print(
+                "[episodes_requests][warn] All rows are commented out (task_id starts with '#'). "
+                "Add at least one real task_id without '#'."
+            )
+
         return rows
 
 
