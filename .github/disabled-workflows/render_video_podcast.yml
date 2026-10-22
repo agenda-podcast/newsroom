@@ -1,37 +1,39 @@
 name: Render Video Podcast
 
-on:
-  workflow_dispatch:
-    inputs:
-      podcast_id:
-        description: "Podcast id (row key in data/video-data/podcasts.csv). Empty uses default."
-        required: false
-        default: ""
-      render_one_pass:
-        description: "If true, render final video in ONE ffmpeg pass (no per-clip encoding)"
-        required: true
-        default: "true"
-        type: choice
-        options:
-          - "true"
-          - "false"
-      max_items:
-        description: "Max NEW episodes to render (0 = no limit)"
-        required: true
-        default: "1"
-      dry_run:
-        description: "If true, do not render, only print plan and write status/rss"
-        required: true
-        default: "false"
-        type: choice
-        options:
-          - "true"
-          - "false"
-      force_guid:
-        description: "If set, process only this guid (even if already processed)"
-        required: false
-        default: ""
-
+# DISABLED: original workflow event-dispatch rules are commented out.
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       podcast_id:
+#         description: "Podcast id (row key in data/video-data/podcasts.csv). Empty uses default."
+#         required: false
+#         default: ""
+#       render_one_pass:
+#         description: "If true, render final video in ONE ffmpeg pass (no per-clip encoding)"
+#         required: true
+#         default: "true"
+#         type: choice
+#         options:
+#           - "true"
+#           - "false"
+#       max_items:
+#         description: "Max NEW episodes to render (0 = no limit)"
+#         required: true
+#         default: "1"
+#       dry_run:
+#         description: "If true, do not render, only print plan and write status/rss"
+#         required: true
+#         default: "false"
+#         type: choice
+#         options:
+#           - "true"
+#           - "false"
+#       force_guid:
+#         description: "If set, process only this guid (even if already processed)"
+#         required: false
+#         default: ""
+# 
+on: {}
 permissions:
   contents: write
   actions: write

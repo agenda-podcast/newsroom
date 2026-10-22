@@ -1,28 +1,30 @@
 name: Check episodes queue
 
-on:
-  workflow_dispatch:
-    inputs:
-      run_all_podcasts:
-        description: "true: render/upload across all podcast_id rows in data/video-data/podcasts.csv"
-        required: true
-        default: "true"
-        type: choice
-        options:
-          - "true"
-          - "false"
-      podcast_id:
-        description: "If run_all_podcasts=false, process only this podcast_id (must exist in podcasts.csv)"
-        required: false
-        default: ""
-  workflow_run:
-    workflows:
-      - Sync Podcast
-      - Render Video Podcast
-      - Upload Video Podcast from Release
-    types:
-      - completed
-
+# DISABLED: original workflow event-dispatch rules are commented out.
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       run_all_podcasts:
+#         description: "true: render/upload across all podcast_id rows in data/video-data/podcasts.csv"
+#         required: true
+#         default: "true"
+#         type: choice
+#         options:
+#           - "true"
+#           - "false"
+#       podcast_id:
+#         description: "If run_all_podcasts=false, process only this podcast_id (must exist in podcasts.csv)"
+#         required: false
+#         default: ""
+#   workflow_run:
+#     workflows:
+#       - Sync Podcast
+#       - Render Video Podcast
+#       - Upload Video Podcast from Release
+#     types:
+#       - completed
+# 
+on: {}
 concurrency:
   group: check-episodes-queue
   cancel-in-progress: true

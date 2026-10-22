@@ -1,8 +1,10 @@
 name: Podcast API - Build Audio RSS
 
-on:
-  workflow_dispatch:
-
+# DISABLED: original workflow event-dispatch rules are commented out.
+# on:
+#   workflow_dispatch:
+# 
+on: {}
 permissions:
   contents: write
 
