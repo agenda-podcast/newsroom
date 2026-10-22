@@ -1,21 +1,23 @@
 name: Upload Video Podcast from Release
 
-on:
-  workflow_dispatch:
-    inputs:
-      podcast_id:
-        description: "Podcast id (row key in data/video-data/podcasts.csv). Empty uses default."
-        required: false
-        default: ""
-      max_items:
-        description: "Upload at most N items (0 = no limit)"
-        required: true
-        default: "1"
-      force_guid:
-        description: "If set, upload only this guid and ignore skip logic"
-        required: false
-        default: ""
-
+# DISABLED: original workflow event-dispatch rules are commented out.
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       podcast_id:
+#         description: "Podcast id (row key in data/video-data/podcasts.csv). Empty uses default."
+#         required: false
+#         default: ""
+#       max_items:
+#         description: "Upload at most N items (0 = no limit)"
+#         required: true
+#         default: "1"
+#       force_guid:
+#         description: "If set, upload only this guid and ignore skip logic"
+#         required: false
+#         default: ""
+# 
+on: {}
 permissions:
   contents: write
   actions: write
